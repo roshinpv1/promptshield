@@ -33,7 +33,7 @@ import { useNavigate } from 'react-router-dom';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
 
-const AVAILABLE_LIBRARIES = ['garak', 'pyrit', 'langtest'];
+const AVAILABLE_LIBRARIES = ['garak', 'pyrit', 'langtest', 'promptfoo'];
 const TEST_CATEGORIES = [
   'prompt_injection',
   'jailbreak',
@@ -45,6 +45,10 @@ const TEST_CATEGORIES = [
   'multi_turn',
   'consistency',
   'fairness',
+  'prompt_quality',
+  'regression',
+  'output_validation',
+  'prompt_comparison',
 ];
 
 function Pipelines() {

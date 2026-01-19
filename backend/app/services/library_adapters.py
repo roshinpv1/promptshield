@@ -1064,6 +1064,7 @@ class PromptfooAdapter(LibraryAdapter):
                     return payload
                 except Exception as e2:
                     print(f"Error parsing payload template: {e}, {e2}")
+                    messages = []
                     if system_prompt:
                         messages.append({"role": "system", "content": system_prompt})
                     messages.append({"role": "user", "content": prompt})

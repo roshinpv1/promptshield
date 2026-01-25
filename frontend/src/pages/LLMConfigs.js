@@ -123,13 +123,15 @@ function LLMConfigs() {
   };
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+    <Box sx={{ width: '100%' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={5}>
         <Typography 
           variant="h4" 
           sx={{ 
-            color: '#1a1a1a',
-            fontWeight: 600,
+            color: '#0f172a',
+            fontWeight: 700,
+            fontSize: '2rem',
+            letterSpacing: '-0.02em',
           }}
         >
           LLM API Configurations
@@ -138,6 +140,7 @@ function LLMConfigs() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpen()}
+          sx={{ minWidth: '200px', height: '40px' }}
         >
           New Configuration
         </Button>
@@ -145,7 +148,12 @@ function LLMConfigs() {
 
       <TableContainer 
         component={Paper}
-        sx={{ borderRadius: 0 }}
+        sx={{ 
+          borderRadius: 0,
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+          border: '1px solid #e2e8f0',
+          overflow: 'auto',
+        }}
       >
         <Table>
           <TableHead>
@@ -223,12 +231,30 @@ function LLMConfigs() {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 0,
+            maxHeight: '90vh',
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          pb: 3, 
+          borderBottom: '1px solid #e2e8f0', 
+          fontWeight: 600,
+          fontSize: '1.5rem',
+          color: '#0f172a',
+          letterSpacing: '-0.01em',
+        }}>
           {editingConfig ? 'Edit LLM Configuration' : 'New LLM Configuration'}
         </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
+        <DialogContent sx={{ pt: 4 }}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -310,9 +336,9 @@ function LLMConfigs() {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 2 }}>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained">
+        <DialogActions sx={{ p: 4, pt: 3, borderTop: '1px solid #e2e8f0', gap: 2 }}>
+          <Button onClick={handleClose} sx={{ minWidth: '100px' }}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" sx={{ minWidth: '120px' }}>
             {editingConfig ? 'Update' : 'Create'}
           </Button>
         </DialogActions>

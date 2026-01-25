@@ -178,13 +178,15 @@ function Pipelines() {
   };
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+    <Box sx={{ width: '100%' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={5}>
         <Typography 
           variant="h4" 
           sx={{ 
-            color: '#1a1a1a',
-            fontWeight: 600,
+            color: '#0f172a',
+            fontWeight: 700,
+            fontSize: '2rem',
+            letterSpacing: '-0.02em',
           }}
         >
           Validation Pipelines
@@ -193,6 +195,7 @@ function Pipelines() {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpen()}
+          sx={{ minWidth: '160px', height: '40px' }}
         >
           New Pipeline
         </Button>
@@ -200,7 +203,12 @@ function Pipelines() {
 
       <TableContainer 
         component={Paper}
-        sx={{ borderRadius: 0 }}
+        sx={{ 
+          borderRadius: 0,
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+          border: '1px solid #e2e8f0',
+          overflow: 'auto',
+        }}
       >
         <Table>
           <TableHead>
@@ -253,12 +261,30 @@ function Pipelines() {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 0,
+            maxHeight: '90vh',
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          pb: 3, 
+          borderBottom: '1px solid #e2e8f0', 
+          fontWeight: 600,
+          fontSize: '1.5rem',
+          color: '#0f172a',
+          letterSpacing: '-0.01em',
+        }}>
           {editingPipeline ? 'Edit Pipeline' : 'New Pipeline'}
         </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
+        <DialogContent sx={{ pt: 4 }}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -295,51 +321,57 @@ function Pipelines() {
               </TextField>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="subtitle2" gutterBottom>
+              <Typography variant="subtitle2" gutterBottom sx={{ mb: 2, fontWeight: 600, color: '#1a1a1a' }}>
                 Select Libraries
               </Typography>
               <FormGroup>
-                {AVAILABLE_LIBRARIES.map((lib) => (
-                  <FormControlLabel
-                    key={lib}
-                    control={
-                      <Checkbox
-                        checked={formData.libraries.includes(lib)}
-                        onChange={() =>
-                          setFormData({
-                            ...formData,
-                            libraries: toggleArrayItem(formData.libraries, lib),
-                          })
-                        }
-                      />
-                    }
-                    label={lib}
-                  />
-                ))}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {AVAILABLE_LIBRARIES.map((lib) => (
+                    <FormControlLabel
+                      key={lib}
+                      control={
+                        <Checkbox
+                          checked={formData.libraries.includes(lib)}
+                          onChange={() =>
+                            setFormData({
+                              ...formData,
+                              libraries: toggleArrayItem(formData.libraries, lib),
+                            })
+                          }
+                        />
+                      }
+                      label={lib}
+                      sx={{ mr: 0 }}
+                    />
+                  ))}
+                </Box>
               </FormGroup>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="subtitle2" gutterBottom>
+              <Typography variant="subtitle2" gutterBottom sx={{ mb: 2, fontWeight: 600, color: '#1a1a1a' }}>
                 Select Test Categories
               </Typography>
               <FormGroup>
-                {TEST_CATEGORIES.map((cat) => (
-                  <FormControlLabel
-                    key={cat}
-                    control={
-                      <Checkbox
-                        checked={formData.test_categories.includes(cat)}
-                        onChange={() =>
-                          setFormData({
-                            ...formData,
-                            test_categories: toggleArrayItem(formData.test_categories, cat),
-                          })
-                        }
-                      />
-                    }
-                    label={cat.replace('_', ' ').toUpperCase()}
-                  />
-                ))}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {TEST_CATEGORIES.map((cat) => (
+                    <FormControlLabel
+                      key={cat}
+                      control={
+                        <Checkbox
+                          checked={formData.test_categories.includes(cat)}
+                          onChange={() =>
+                            setFormData({
+                              ...formData,
+                              test_categories: toggleArrayItem(formData.test_categories, cat),
+                            })
+                          }
+                        />
+                      }
+                      label={cat.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      sx={{ mr: 0 }}
+                    />
+                  ))}
+                </Box>
               </FormGroup>
             </Grid>
             <Grid item xs={12}>
@@ -357,9 +389,9 @@ function Pipelines() {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 2 }}>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained">
+        <DialogActions sx={{ p: 4, pt: 3, borderTop: '1px solid #e2e8f0', gap: 2 }}>
+          <Button onClick={handleClose} sx={{ minWidth: '100px' }}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" sx={{ minWidth: '120px' }}>
             {editingPipeline ? 'Update' : 'Create'}
           </Button>
         </DialogActions>

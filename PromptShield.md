@@ -45,18 +45,26 @@ PromptShield is a modern, enterprise-grade web platform that unifies open-source
 
 PromptShield is library-agnostic and plugin-based, but **only open-source Python libraries are allowed**.
 
-### Phase-1 Supported Libraries (Python OSS Only)
+### Phase-1 Supported Libraries (Python OSS Only) - **IMPLEMENTED**
 
-| Category | Library | Description |
-|----------|---------|-------------|
-| LLM Red Teaming | Garak | Prompt injection, jailbreak, misuse |
-| LLM Red Teaming | PyRIT | Adversarial and multi-turn attacks |
-| Robustness & Bias | LangTest | Bias, robustness, consistency testing |
-| ML Security | Adversarial Robustness Toolbox (ART) | Adversarial ML attacks |
-| Jailbreak Testing | BrokenHill | Automated jailbreak generation |
-| Fairness & Bias | AIF360 | Bias and fairness metrics |
-| Prompt Injection Detection | Rebuff (OSS mode) | Prompt injection detection |
-| Evaluation | OpenAI-Evals-style OSS frameworks | Custom Python eval harnesses |
+| Category | Library | Description | Status |
+|----------|---------|-------------|--------|
+| LLM Red Teaming | **Garak** | Prompt injection, jailbreak, misuse, toxicity | ✅ Fully Implemented |
+| LLM Red Teaming | **PyRIT** | Adversarial, multi-turn attacks, jailbreak | ✅ Fully Implemented |
+| Robustness & Bias | **LangTest** | Bias, robustness, consistency, fairness testing | ✅ Fully Implemented |
+| Evaluation & Quality | **Promptfoo** | Prompt quality, regression, output validation, prompt comparison | ✅ Fully Implemented |
+
+**Note:** All implemented libraries make actual LLM API calls (no mocks). Each adapter includes comprehensive error handling, logging, and result normalization.
+
+### Future Library Integrations (Planned)
+
+| Category | Library | Description | Status |
+|----------|---------|-------------|--------|
+| ML Security | Adversarial Robustness Toolbox (ART) | Adversarial ML attacks | 🔄 Planned |
+| Jailbreak Testing | BrokenHill | Automated jailbreak generation | 🔄 Planned |
+| Fairness & Bias | AIF360 | Bias and fairness metrics | 🔄 Planned |
+| Prompt Injection Detection | Rebuff (OSS mode) | Prompt injection detection | 🔄 Planned |
+| Evaluation | OpenAI-Evals-style OSS frameworks | Custom Python eval harnesses | 🔄 Planned |
 
 ### Integration Requirements
 
@@ -69,14 +77,24 @@ All integrations must:
 
 ### Frontend
 
-- **Framework**: React
-- **Type**: Modern SPA
-- **Theme**: Light Wells Fargo–inspired color palette
-  - Clean whites, soft blues, muted yellows
+- **Framework**: React 18.2.0
+- **Type**: Modern SPA (Single Page Application)
+- **UI Library**: Material-UI (MUI) 5.15.0
+- **Theme**: Modern SaaS-grade light theme with sharp corners
+  - Clean whites, professional grays, accent blues
+  - Enterprise-grade design with sharp, precise corners (no rounded elements)
+  - Consistent spacing and alignment
+  - Modern typography and visual hierarchy
+- **Layout Structure**:
+  - Top header bar with logo, navigation links, and user actions
+  - Left sidebar (280px) with user profile section and full navigation menu
+  - Main content area (max-width: 1400px, centered)
 - **UX Style**:
   - Dashboard-centric
   - Postman-like workflows
   - Zero CLI exposure
+  - Auto-refresh for real-time updates
+  - Polling for execution status
 
 ### Backend
 
@@ -110,8 +128,18 @@ Users configure LLM endpoints exactly like Postman.
 - HTTP method
 - Headers (key-value pairs)
 - API keys / bearer tokens
-- Payload templates
+- Payload templates with dynamic placeholders:
+  - `{prompt}` - User prompt placeholder
+  - `{system_prompt}` - System prompt placeholder
+  - Both placeholders supported in messages array and top-level fields
 - Timeout & retry configs
+
+**Payload Template Features:**
+- Supports both user and system prompts
+- Flexible JSON structure
+- Placeholder substitution in messages array
+- Placeholder substitution in top-level JSON fields
+- Automatic message array construction if not present
 
 **Configurations are:**
 - Reusable
@@ -121,15 +149,34 @@ Users configure LLM endpoints exactly like Postman.
 ### 7.3 Validation Pipeline Builder
 
 Visual pipeline creation:
-- Select Python OSS libraries
-- Choose test categories:
+- Select Python OSS libraries (Garak, PyRIT, LangTest, Promptfoo)
+- Choose test categories by library:
+
+  **Garak:**
   - Prompt Injection
   - Jailbreak
-  - Data Leakage
-  - Bias & Fairness
+  - Misuse
   - Toxicity
-  - Hallucination
+
+  **PyRIT:**
+  - Adversarial
+  - Multi-turn
+  - Jailbreak
+
+  **LangTest:**
+  - Bias
+  - Robustness
+  - Consistency
+  - Fairness
+
+  **Promptfoo:**
+  - Prompt Quality
+  - Regression
+  - Output Validation
+  - Prompt Comparison
+
 - Configure severity thresholds
+- Link to LLM configuration
 - Save as reusable templates
 
 ### 7.4 Execution Engine (FastAPI)
@@ -146,17 +193,45 @@ The FastAPI backend:
 All library outputs are converted into a common schema:
 
 - Test category
-- Severity
+- Severity (critical, high, medium, low, info)
 - Risk type
 - Evidence (prompt/response)
-- Confidence score (if available)
+- Confidence score (0.0-1.0)
+- Library name
+- Execution timestamp
 
-### 7.6 Reports & Evidence
+### 7.6 Safety Score Calculation
+
+**Safety Score Feature:**
+- Calculates overall security health score (0-100 scale)
+- Assigns letter grade (A, B, C, D, F)
+- Based on severity-weighted findings:
+  - Critical: -20 points
+  - High: -10 points
+  - Medium: -5 points
+  - Low: -2 points
+  - Info: -0.5 points
+- Displayed prominently in results view
+- Color-coded by grade for quick assessment
+
+### 7.7 Reports & Evidence
 
 Exports supported:
 - **JSON** (machine-readable)
 - **PDF** (audit & governance)
 - **HTML** (human-readable)
+
+### 7.8 Execution Management
+
+**Features:**
+- Asynchronous execution using `asyncio.create_task`
+- Real-time status tracking (pending, running, completed, failed)
+- Background task execution (non-blocking API)
+- Comprehensive error handling and logging
+- Execution timestamps (started_at, completed_at)
+- Error message capture for failed executions
+- Auto-refresh in UI (polling every 3 seconds)
+- Execution lifecycle logging
 
 ## 8. Supported LLMs
 
@@ -287,7 +362,13 @@ promptshield/
 4. **Library Adapters** (`app/services/library_adapters.py`)
    - Plugin-based architecture
    - Base `LibraryAdapter` interface
-   - Implementations for Garak, PyRIT, LangTest
+   - Implementations for Garak, PyRIT, LangTest, Promptfoo
+   - **All adapters make actual LLM API calls** (no mocks)
+   - Comprehensive error handling with tracebacks
+   - Detailed logging for debugging
+   - Support for system prompts in payload templates
+   - Centralized HTTP client with retry logic
+   - Response validation and error detection
    - Extensible for additional libraries
 
 5. **Result Normalizer** (`app/services/normalizer.py`)
@@ -327,8 +408,10 @@ promptshield/
 5. **Results** (`pages/Results.js`)
    - Filterable results table
    - Severity-based visualization
+   - **Safety Score card** with grade (A-F) and color coding
    - Evidence viewer
-   - Export functionality
+   - Export functionality (JSON, HTML, PDF)
+   - Summary statistics (by severity, library, category)
 
 ### Database Schema
 
@@ -360,8 +443,8 @@ promptshield/
 - `POST /api/v1/executions/{id}/cancel` - Cancel execution
 
 #### Results
-- `GET /api/v1/results/execution/{id}` - Get execution results
-- `GET /api/v1/results/execution/{id}/summary` - Get summary statistics
+- `GET /api/v1/results/execution/{id}` - Get execution results (with filters: severity, library, test_category)
+- `GET /api/v1/results/execution/{id}/summary` - Get summary statistics (includes safety_score and safety_grade)
 - `GET /api/v1/results/{id}` - Get specific result
 
 #### Reports
@@ -369,19 +452,24 @@ promptshield/
 - `GET /api/v1/reports/execution/{id}/html` - HTML report
 - `GET /api/v1/reports/execution/{id}/pdf` - PDF report
 
-### Color Theme (Wells Fargo Inspired)
+### Color Theme (Modern SaaS-Grade Light Theme)
 
-- **Primary Blue**: `#003087`
-- **Secondary Blue**: `#0053A0`
-- **Light Blue**: `#E6F0F5`
-- **Accent Yellow**: `#FFC72C`
-- **Muted Yellow**: `#F5E6D3`
+- **Primary Colors**: Professional blues and grays
+- **Background**: Clean whites and light grays
+- **Accent Colors**: Professional palette
+- **Component Styling**: Sharp corners (borderRadius: 0) for all elements
 - **Severity Colors**:
   - Critical: `#D32F2F` (Red)
   - High: `#F57C00` (Orange)
   - Medium: `#FBC02D` (Yellow)
   - Low: `#388E3C` (Green)
   - Info: `#1976D2` (Blue)
+- **Safety Score Colors**:
+  - Grade A (90-100): Green border
+  - Grade B (80-89): Blue border
+  - Grade C (70-79): Yellow border
+  - Grade D (60-69): Orange border
+  - Grade F (<60): Red border
 
 ### Technology Stack
 
@@ -478,9 +566,18 @@ class NewLibraryAdapter(LibraryAdapter):
 ```python
 _ADAPTERS = {
     "garak": GarakAdapter(),
+    "pyrit": PyRITAdapter(),
+    "langtest": LangTestAdapter(),
+    "promptfoo": PromptfooAdapter(),
     "new_library": NewLibraryAdapter(),
 }
 ```
+
+**Current Adapter Registry:**
+- `garak` - GarakAdapter (prompt_injection, jailbreak, misuse, toxicity)
+- `pyrit` - PyRITAdapter (adversarial, multi_turn, jailbreak)
+- `langtest` - LangTestAdapter (bias, robustness, consistency, fairness)
+- `promptfoo` - PromptfooAdapter (prompt_quality, regression, output_validation, prompt_comparison)
 
 ### Security Considerations
 
@@ -489,6 +586,32 @@ _ADAPTERS = {
 - Secrets never logged
 - On-prem/VPC deployment ready
 - CORS configured for frontend origins
+- Comprehensive error handling prevents information leakage
+- Request/response validation
+
+### Implementation Details
+
+**LLM Call Implementation:**
+- All library adapters make actual HTTP calls to configured LLM endpoints
+- Uses `httpx` for asynchronous HTTP requests
+- Supports custom headers, authentication, and payload templates
+- Handles connection errors, HTTP errors, and JSON parsing errors
+- Validates responses to ensure actual LLM responses (not error messages)
+- Comprehensive logging for debugging and monitoring
+
+**Payload Template System:**
+- Supports `{prompt}` placeholder for user prompts
+- Supports `{system_prompt}` placeholder for system prompts
+- Placeholders can be used in messages array or top-level JSON fields
+- Automatic message array construction if template doesn't include it
+- Flexible JSON structure support
+
+**Error Handling:**
+- All adapters include try-except blocks with detailed logging
+- Traceback logging for debugging
+- Graceful failure handling (failed tests don't crash entire execution)
+- Execution status tracking (failed executions marked appropriately)
+- User-friendly error messages in UI
 
 ### Future Enhancements
 
@@ -512,16 +635,68 @@ It brings Postman-level usability to LLM security, red teaming, and governance�
 The platform successfully:
 - ✅ Centralizes LLM validation using only open-source Python libraries
 - ✅ Eliminates CLI dependency with a modern web UI
-- ✅ Provides Postman-style LLM API configuration
+- ✅ Provides Postman-style LLM API configuration with system prompt support
 - ✅ Enables repeatable, auditable validation workflows
 - ✅ Normalizes results across heterogeneous libraries
 - ✅ Supports multiple export formats for governance and reporting
 - ✅ Implements extensible plugin architecture for new libraries
-- ✅ Delivers enterprise-grade UX with Wells Fargo-inspired design
+- ✅ Delivers modern SaaS-grade UX with sharp corners and enterprise design
+- ✅ **Makes actual LLM API calls** (no mocks) for all integrated libraries
+- ✅ Implements **Safety Score** calculation and grading (A-F)
+- ✅ Provides real-time execution monitoring with auto-refresh
+- ✅ Includes comprehensive error handling and logging
+- ✅ Supports 4 libraries: Garak, PyRIT, LangTest, Promptfoo
+- ✅ Implements asynchronous execution with background tasks
 
 ---
 
 **Version**: 1.0.0  
-**Last Updated**: 2024  
+**Last Updated**: December 2024  
 **License**: Open Source (TBD)
 
+## 16. Recent Updates & Improvements
+
+### Completed Features (December 2024)
+
+1. **Full Library Integration**
+   - ✅ Garak adapter with actual LLM calls
+   - ✅ PyRIT adapter with actual LLM calls (replaced mock)
+   - ✅ LangTest adapter with actual LLM calls (replaced mock)
+   - ✅ Promptfoo adapter with actual LLM calls (new integration)
+
+2. **Safety Score Feature**
+   - ✅ Safety score calculation (0-100 scale)
+   - ✅ Letter grade assignment (A-F)
+   - ✅ Color-coded display in UI
+   - ✅ Integration in results summary API
+
+3. **Payload Template Enhancements**
+   - ✅ Support for `{prompt}` placeholder
+   - ✅ Support for `{system_prompt}` placeholder
+   - ✅ Flexible JSON structure handling
+
+4. **UI/UX Improvements**
+   - ✅ Modern SaaS-grade design with sharp corners
+   - ✅ Top header with logo and navigation
+   - ✅ Left sidebar with user profile and full navigation
+   - ✅ Centered main content area (max-width: 1400px)
+   - ✅ Auto-refresh for executions list
+   - ✅ Polling for execution status
+   - ✅ Loading indicators and error messages
+
+5. **Error Handling & Logging**
+   - ✅ Comprehensive logging throughout backend
+   - ✅ Traceback logging for debugging
+   - ✅ Error validation for LLM responses
+   - ✅ Execution status tracking (failed executions properly marked)
+
+6. **Execution Engine Improvements**
+   - ✅ Asynchronous execution using `asyncio.create_task`
+   - ✅ Background task management
+   - ✅ Execution lifecycle logging
+   - ✅ Proper timestamp tracking
+
+7. **Testing & Validation**
+   - ✅ API integration test (`test_api.py`)
+   - ✅ Simple adapter test (`test_simple.py`)
+   - ✅ Full flow verification (config → pipeline → execution → results)

@@ -134,23 +134,25 @@ function Results() {
   const uniqueCategories = [...new Set(results.map(r => r.test_category))];
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+    <Box sx={{ width: '100%' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={5} sx={{ flexWrap: { xs: 'wrap', sm: 'nowrap' }, gap: 2 }}>
         <Typography 
           variant="h4" 
           sx={{ 
-            color: '#1a1a1a',
-            fontWeight: 600,
+            color: '#0f172a',
+            fontWeight: 700,
+            fontSize: '2rem',
+            letterSpacing: '-0.02em',
           }}
         >
           Execution Results - #{executionId}
         </Typography>
-        <Box>
+        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
           <Button
             variant="outlined"
             startIcon={<GetAppIcon />}
             onClick={() => handleExport('json')}
-            sx={{ mr: 1 }}
+            sx={{ borderRadius: 0, height: '40px' }}
           >
             Export JSON
           </Button>
@@ -158,7 +160,7 @@ function Results() {
             variant="outlined"
             startIcon={<GetAppIcon />}
             onClick={() => handleExport('html')}
-            sx={{ mr: 1 }}
+            sx={{ borderRadius: 0, height: '40px' }}
           >
             Export HTML
           </Button>
@@ -166,6 +168,7 @@ function Results() {
             variant="outlined"
             startIcon={<GetAppIcon />}
             onClick={() => handleExport('pdf')}
+            sx={{ borderRadius: 0, height: '40px' }}
           >
             Export PDF
           </Button>
@@ -173,48 +176,78 @@ function Results() {
       </Box>
 
       {summary && (
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={12} md={3}>
-            <Card sx={{ borderLeft: '4px solid', borderLeftColor: summary.safety_score >= 80 ? '#059669' : summary.safety_score >= 60 ? '#f59e0b' : '#b31e30' }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>Safety Score</Typography>
-                <Typography variant="h3" sx={{ 
-                  color: summary.safety_score >= 80 ? '#059669' : summary.safety_score >= 60 ? '#f59e0b' : '#b31e30', 
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ 
+              borderLeft: '4px solid', 
+              borderLeftColor: summary.safety_score >= 80 ? '#10b981' : summary.safety_score >= 60 ? '#f59e0b' : '#dc2626',
+              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+              border: '1px solid #e2e8f0',
+              borderRadius: 0,
+              height: '100%',
+              position: 'relative',
+              overflow: 'hidden',
+            }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Safety Score
+                </Typography>
+                <Typography variant="h2" sx={{ 
+                  color: summary.safety_score >= 80 ? '#10b981' : summary.safety_score >= 60 ? '#f59e0b' : '#dc2626', 
                   fontWeight: 700,
-                  mb: 0.5
+                  mb: 1,
+                  fontSize: '3rem',
+                  lineHeight: 1,
+                  letterSpacing: '-0.02em',
                 }}>
                   {summary.safety_score !== null && summary.safety_score !== undefined 
                     ? summary.safety_score.toFixed(1) 
                     : 'N/A'}
                 </Typography>
                 {summary.safety_grade && (
-                  <Typography variant="h5" sx={{ 
-                    color: summary.safety_score >= 80 ? '#059669' : summary.safety_score >= 60 ? '#f59e0b' : '#b31e30',
-                    fontWeight: 600
+                  <Typography variant="h6" sx={{ 
+                    color: summary.safety_score >= 80 ? '#10b981' : summary.safety_score >= 60 ? '#f59e0b' : '#dc2626',
+                    fontWeight: 600,
+                    mb: 1.5,
+                    fontSize: '1.25rem',
                   }}>
                     Grade: {summary.safety_grade}
                   </Typography>
                 )}
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1 }}>
+                <Typography variant="caption" sx={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>
                   Scale: 0-100 (100 = Perfect)
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>Total Results</Typography>
-                <Typography variant="h4" sx={{ color: '#b31e30', fontWeight: 600 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ 
+              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+              border: '1px solid #e2e8f0',
+              borderRadius: 0,
+              height: '100%',
+            }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Total Results
+                </Typography>
+                <Typography variant="h2" sx={{ color: '#dc2626', fontWeight: 700, fontSize: '3rem', lineHeight: 1, letterSpacing: '-0.02em' }}>
                   {summary.total_results}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>By Severity</Typography>
+            <Card sx={{ 
+              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+              border: '1px solid #e2e8f0',
+              borderRadius: 0,
+              height: '100%',
+            }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600, fontSize: '1.125rem', color: '#0f172a', letterSpacing: '-0.01em' }}>
+                  By Severity
+                </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                   {Object.entries(summary.by_severity || {}).map(([severity, count]) => (
                     <Chip
@@ -233,7 +266,7 @@ function Results() {
         </Grid>
       )}
 
-      <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+      <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
         <FormControl size="small" sx={{ minWidth: 150 }}>
           <InputLabel>Severity</InputLabel>
           <Select
@@ -283,7 +316,12 @@ function Results() {
 
       <TableContainer 
         component={Paper}
-        sx={{ borderRadius: 0 }}
+        sx={{ 
+          borderRadius: 0,
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+          border: '1px solid #e2e8f0',
+          overflow: 'auto',
+        }}
       >
         <Table>
           <TableHead>

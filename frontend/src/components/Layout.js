@@ -12,20 +12,28 @@ import {
   Typography,
   Box,
   IconButton,
+  Avatar,
+  TextField,
+  InputAdornment,
+  Badge,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import PersonIcon from '@mui/icons-material/Person';
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import ChatIcon from '@mui/icons-material/Chat';
 
-const drawerWidth = 72;
+const drawerWidth = 280;
 
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-  { text: 'LLM Configs', icon: <SettingsIcon />, path: '/llm-configs' },
   { text: 'Pipelines', icon: <AccountTreeIcon />, path: '/pipelines' },
   { text: 'Executions', icon: <PlayArrowIcon />, path: '/executions' },
+  { text: 'LLM Configs', icon: <SettingsIcon />, path: '/llm-configs' },
 ];
 
 function Layout({ children }) {
@@ -38,30 +46,50 @@ function Layout({ children }) {
   };
 
   const drawer = (
-    <Box sx={{ height: '100%', bgcolor: '#1f2937', display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 2, borderRight: '1px solid #374151' }}>
-      {/* Logo/Brand */}
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          bgcolor: '#b31e30',
-          borderRadius: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          mb: 3,
-          color: '#FFFFFF',
-          fontWeight: 700,
-          fontSize: '1.125rem',
-          boxShadow: '0 4px 14px 0 rgba(179, 30, 48, 0.15)',
-        }}
-      >
-        PS
+    <Box sx={{ 
+      height: '100%', 
+      bgcolor: '#ffffff', 
+      display: 'flex', 
+      flexDirection: 'column',
+      borderRight: '1px solid #e2e8f0',
+      overflow: 'auto',
+    }}>
+      {/* Logo Section */}
+      <Box sx={{ p: 3, borderBottom: '1px solid #e2e8f0' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              background: '#dc2626',
+              borderRadius: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#FFFFFF',
+              fontWeight: 700,
+              fontSize: '1.125rem',
+            }}
+          >
+            PS
+          </Box>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 700, 
+              color: '#0f172a',
+              fontSize: '1.125rem',
+            }}
+          >
+            PromptShield
+          </Typography>
+        </Box>
       </Box>
-      
-      <List sx={{ width: '100%', px: 0.5 }}>
+
+      {/* Navigation Menu */}
+      <List sx={{ width: '100%', px: 2, pt: 2 }}>
         {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ mb: 0.5, display: 'flex', justifyContent: 'center' }}>
+          <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
             <ListItemButton
               selected={location.pathname === item.path}
               onClick={() => {
@@ -71,40 +99,83 @@ function Layout({ children }) {
               sx={{
                 borderRadius: 0,
                 minHeight: 48,
-                width: 48,
-                justifyContent: 'center',
-                px: 0,
+                px: 2,
+                py: 1.5,
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                 '&.Mui-selected': {
-                  backgroundColor: '#b31e30',
-                  color: '#FFFFFF',
+                  backgroundColor: '#fef2f2',
+                  color: '#dc2626',
+                  borderLeft: '3px solid #dc2626',
                   '&:hover': {
-                    backgroundColor: '#9a1a29',
+                    backgroundColor: '#fee2e2',
                   },
                   '& .MuiListItemIcon-root': {
-                    color: '#FFFFFF',
+                    color: '#dc2626',
+                  },
+                  '& .MuiListItemText-primary': {
+                    fontWeight: 600,
                   },
                 },
                 '&:hover': {
-                  backgroundColor: '#374151',
+                  backgroundColor: '#f8fafc',
                   '& .MuiListItemIcon-root': {
-                    color: '#FFFFFF',
+                    color: '#dc2626',
                   },
                 },
               }}
             >
               <ListItemIcon 
                 sx={{ 
-                  color: location.pathname === item.path ? '#FFFFFF' : '#9ca3af',
-                  minWidth: 'auto',
-                  justifyContent: 'center',
+                  color: location.pathname === item.path ? '#dc2626' : '#64748b',
+                  minWidth: 40,
                 }}
               >
                 {item.icon}
               </ListItemIcon>
+              <ListItemText 
+                primary={item.text}
+                primaryTypographyProps={{
+                  fontSize: '0.9375rem',
+                  fontWeight: location.pathname === item.path ? 600 : 500,
+                  color: location.pathname === item.path ? '#dc2626' : '#0f172a',
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
+      
+      {/* Bottom Section - Settings */}
+      <Box sx={{ mt: 'auto', px: 2, pb: 2 }}>
+        <ListItem disablePadding>
+          <ListItemButton
+            sx={{
+              borderRadius: 0,
+              minHeight: 48,
+              px: 2,
+              py: 1.5,
+              '&:hover': {
+                backgroundColor: '#f8fafc',
+                '& .MuiListItemIcon-root': {
+                  color: '#dc2626',
+                },
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: '#64748b', minWidth: 40 }}>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText 
+              primary="Settings"
+              primaryTypographyProps={{
+                fontSize: '0.9375rem',
+                fontWeight: 500,
+                color: '#0f172a',
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+      </Box>
     </Box>
   );
 
@@ -116,38 +187,104 @@ function Layout({ children }) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          backgroundColor: '#FFFFFF',
-          borderBottom: '1px solid #E1E8ED',
-          color: '#2C3E50',
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #e2e8f0',
+          color: '#0f172a',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
-        <Toolbar sx={{ minHeight: '64px !important', px: { xs: 2, sm: 3 } }}>
+        <Toolbar sx={{ 
+          minHeight: '72px !important', 
+          px: { xs: 2, sm: 3 },
+          justifyContent: 'space-between',
+          gap: 2,
+        }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
             sx={{ 
-              mr: 2, 
+              mr: 1, 
               display: { sm: 'none' },
-              color: '#1a1a1a',
+              color: '#0f172a',
             }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography 
-            variant="h6" 
-            noWrap 
-            component="div"
+          
+          {/* Search Bar */}
+          <TextField
+            placeholder="Search anything"
+            variant="outlined"
+            size="small"
             sx={{
-              fontWeight: 600,
-              fontSize: '1.125rem',
-              color: '#1a1a1a',
               flexGrow: 1,
+              maxWidth: { xs: '100%', md: '400px' },
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 0,
+                backgroundColor: '#f8fafc',
+                '& fieldset': {
+                  borderColor: '#e2e8f0',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#cbd5e1',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#dc2626',
+                  borderWidth: '1px',
+                },
+              },
             }}
-          >
-            LLM Validation & Red Teaming Platform
-          </Typography>
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: '#64748b', fontSize: 20 }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          
+          {/* Right Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton
+              sx={{
+                color: '#64748b',
+                '&:hover': {
+                  color: '#dc2626',
+                  backgroundColor: '#fef2f2',
+                },
+              }}
+            >
+              <ChatIcon />
+            </IconButton>
+            <IconButton
+              sx={{
+                color: '#64748b',
+                '&:hover': {
+                  color: '#dc2626',
+                  backgroundColor: '#fef2f2',
+                },
+              }}
+            >
+              <Badge badgeContent={3} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <Avatar
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: '#dc2626',
+                cursor: 'pointer',
+                '&:hover': {
+                  opacity: 0.9,
+                },
+              }}
+            >
+              <PersonIcon />
+            </Avatar>
+          </Box>
         </Toolbar>
       </AppBar>
       <Box
@@ -163,10 +300,10 @@ function Layout({ children }) {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { 
-              boxSizing: 'border-box', 
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
               width: drawerWidth,
-              borderRight: 'none',
+              borderRight: '1px solid #e2e8f0',
             },
           }}
         >
@@ -176,10 +313,12 @@ function Layout({ children }) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { 
-              boxSizing: 'border-box', 
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
               width: drawerWidth,
-              borderRight: 'none',
+              borderRight: '1px solid #e2e8f0',
+              top: '72px',
+              height: 'calc(100% - 72px)',
             },
           }}
           open
@@ -191,18 +330,20 @@ function Layout({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: { xs: 2, sm: 3, md: 4 },
+          p: { xs: 3, sm: 4, md: 5 },
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          mt: 8,
-          bgcolor: '#fafafa',
-          minHeight: 'calc(100vh - 64px)',
+          mt: '72px',
+          bgcolor: '#f8fafc',
+          minHeight: 'calc(100vh - 72px)',
+          overflow: 'auto',
         }}
       >
-        {children}
+        <Box sx={{ maxWidth: '1400px', mx: 'auto', width: '100%' }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   );
 }
 
 export default Layout;
-

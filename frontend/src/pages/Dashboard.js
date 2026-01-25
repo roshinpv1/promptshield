@@ -79,71 +79,91 @@ function Dashboard() {
     {
       title: 'Total Executions',
       value: stats.totalExecutions,
-      icon: <PlayArrowIcon sx={{ fontSize: 32 }} />,
-      color: '#b31e30',
+      icon: <PlayArrowIcon sx={{ fontSize: 36 }} />,
+      color: '#dc2626',
     },
     {
       title: 'Running',
       value: stats.runningExecutions,
-      icon: <CircularProgress size={32} sx={{ color: '#FFD700' }} />,
-      color: '#FFD700',
+      icon: <CircularProgress size={36} sx={{ color: '#f59e0b' }} />,
+      color: '#f59e0b',
     },
     {
       title: 'Completed',
       value: stats.completedExecutions,
-      icon: <CheckCircleIcon sx={{ fontSize: 32 }} />,
-      color: '#059669',
+      icon: <CheckCircleIcon sx={{ fontSize: 36 }} />,
+      color: '#10b981',
     },
     {
       title: 'Total Results',
       value: stats.totalResults,
-      icon: <AssessmentIcon sx={{ fontSize: 32 }} />,
-      color: '#1f2937',
+      icon: <AssessmentIcon sx={{ fontSize: 36 }} />,
+      color: '#3b82f6',
     },
   ];
 
   return (
-    <Box>
-      <Typography 
-        variant="h4" 
-        gutterBottom 
-        sx={{ 
-          mb: 3, 
-          color: '#1a1a1a',
-          fontWeight: 600,
-        }}
-      >
-        Dashboard
-      </Typography>
+    <Box sx={{ width: '100%' }}>
+      {/* Welcome Section */}
+      <Box sx={{ mb: 4 }}>
+        <Typography 
+          variant="h3" 
+          sx={{ 
+            mb: 1, 
+            color: '#0f172a',
+            fontWeight: 700,
+            fontSize: '2rem',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Hi, Welcome Back
+        </Typography>
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            color: '#64748b',
+            fontSize: '1rem',
+          }}
+        >
+          This is your LLM validation report so far
+        </Typography>
+      </Box>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ mb: 3 }}>
         {statCards.map((card, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Card
               sx={{
                 height: '100%',
-                borderLeft: `3px solid ${card.color}`,
+                borderLeft: `4px solid ${card.color}`,
                 borderRadius: 0,
+                boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+                border: '1px solid #e2e8f0',
+                borderLeftWidth: '4px',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
+                overflow: 'hidden',
                 '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)',
-                  borderLeft: `3px solid ${card.color}`,
+                  boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                  transform: 'translateY(-2px)',
+                  borderColor: card.color,
+                  borderLeftWidth: '4px',
                 },
               }}
               onClick={() => navigate('/executions')}
             >
-              <CardContent sx={{ p: 2.5 }}>
+              <CardContent sx={{ p: 4 }}>
                 <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                  <Box>
+                  <Box sx={{ flex: 1 }}>
                     <Typography 
-                      color="text.secondary" 
+                      color="#64748b" 
                       gutterBottom 
                       variant="body2"
                       sx={{ 
-                        fontWeight: 500,
+                        fontWeight: 600,
                         fontSize: '0.8125rem',
-                        mb: 0.5,
+                        mb: 1.5,
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em',
                       }}
@@ -151,12 +171,13 @@ function Dashboard() {
                       {card.title}
                     </Typography>
                     <Typography 
-                      variant="h4" 
+                      variant="h2" 
                       sx={{ 
                         color: card.color,
-                        fontWeight: 600,
-                        fontSize: '1.75rem',
-                        lineHeight: 1.2,
+                        fontWeight: 700,
+                        fontSize: '2.5rem',
+                        lineHeight: 1.1,
+                        letterSpacing: '-0.02em',
                       }}
                     >
                       {card.value}
@@ -165,7 +186,9 @@ function Dashboard() {
                   <Box 
                     sx={{ 
                       color: card.color,
-                      opacity: 0.7,
+                      opacity: 0.8,
+                      ml: 2,
+                      transition: 'opacity 200ms ease',
                     }}
                   >
                     {card.icon}
@@ -177,47 +200,57 @@ function Dashboard() {
         ))}
 
         <Grid item xs={12} md={8}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent sx={{ p: 3 }}>
+          <Card sx={{ 
+            height: '100%',
+            borderRadius: 0,
+            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+            border: '1px solid #e2e8f0',
+          }}>
+            <CardContent sx={{ p: 4 }}>
               <Typography 
                 variant="h6" 
                 gutterBottom
                 sx={{ 
                   fontWeight: 600,
-                  mb: 3,
-                  color: '#212529',
+                  mb: 4,
+                  color: '#0f172a',
+                  fontSize: '1.125rem',
+                  letterSpacing: '-0.01em',
                 }}
               >
                 Results by Severity
               </Typography>
               {severityData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={severityData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E9ECEF" />
-                    <XAxis 
-                      dataKey="severity" 
-                      tick={{ fill: '#495057', fontSize: 12 }}
-                      stroke="#CED4DA"
-                    />
-                    <YAxis 
-                      tick={{ fill: '#495057', fontSize: 12 }}
-                      stroke="#CED4DA"
-                    />
-                    <Tooltip 
-                      contentStyle={{
-                        backgroundColor: '#FFFFFF',
-                        border: '1px solid #E9ECEF',
-                        borderRadius: 8,
-                      }}
-                    />
-                    <Legend />
-                    <Bar dataKey="count" fill="#b31e30" radius={[0, 0, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <Box sx={{ width: '100%', height: '300px' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={severityData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis 
+                        dataKey="severity" 
+                        tick={{ fill: '#6b7280', fontSize: 12 }}
+                        stroke="#9ca3af"
+                      />
+                      <YAxis 
+                        tick={{ fill: '#6b7280', fontSize: 12 }}
+                        stroke="#9ca3af"
+                      />
+                      <Tooltip 
+                        contentStyle={{
+                          backgroundColor: '#FFFFFF',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: 0,
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+                        }}
+                      />
+                      <Legend />
+                      <Bar dataKey="count" fill="#dc2626" radius={[0, 0, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Box>
               ) : (
                 <Typography 
                   variant="body2" 
-                  color="text.secondary" 
+                  color="#6b7280" 
                   sx={{ textAlign: 'center', py: 4 }}
                 >
                   No results data available
@@ -228,15 +261,22 @@ function Dashboard() {
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent sx={{ p: 3 }}>
+          <Card sx={{ 
+            height: '100%',
+            borderRadius: 0,
+            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+            border: '1px solid #e2e8f0',
+          }}>
+            <CardContent sx={{ p: 4 }}>
               <Typography 
                 variant="h6" 
                 gutterBottom
                 sx={{ 
                   fontWeight: 600,
                   mb: 3,
-                  color: '#212529',
+                  color: '#0f172a',
+                  fontSize: '1.125rem',
+                  letterSpacing: '-0.01em',
                 }}
               >
                 Quick Actions
@@ -247,13 +287,22 @@ function Dashboard() {
                   onClick={() => navigate('/llm-configs')}
                   sx={{ 
                     cursor: 'pointer',
-                    py: 1.5,
+                    py: 1.75,
+                    px: 2,
                     fontSize: '0.875rem',
                     fontWeight: 500,
                     justifyContent: 'flex-start',
+                    borderRadius: 0,
+                    height: 'auto',
+                    backgroundColor: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      backgroundColor: '#f7eaec',
-                      color: '#b31e30',
+                      backgroundColor: '#fef2f2',
+                      color: '#dc2626',
+                      borderColor: '#dc2626',
+                      borderLeft: '3px solid #dc2626',
+                      transform: 'translateX(2px)',
                     },
                   }}
                 />
@@ -262,13 +311,22 @@ function Dashboard() {
                   onClick={() => navigate('/pipelines')}
                   sx={{ 
                     cursor: 'pointer',
-                    py: 1.5,
+                    py: 1.75,
+                    px: 2,
                     fontSize: '0.875rem',
                     fontWeight: 500,
                     justifyContent: 'flex-start',
+                    borderRadius: 0,
+                    height: 'auto',
+                    backgroundColor: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      backgroundColor: '#f7eaec',
-                      color: '#b31e30',
+                      backgroundColor: '#fef2f2',
+                      color: '#dc2626',
+                      borderColor: '#dc2626',
+                      borderLeft: '3px solid #dc2626',
+                      transform: 'translateX(2px)',
                     },
                   }}
                 />
@@ -277,13 +335,22 @@ function Dashboard() {
                   onClick={() => navigate('/executions')}
                   sx={{ 
                     cursor: 'pointer',
-                    py: 1.5,
+                    py: 1.75,
+                    px: 2,
                     fontSize: '0.875rem',
                     fontWeight: 500,
                     justifyContent: 'flex-start',
+                    borderRadius: 0,
+                    height: 'auto',
+                    backgroundColor: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      backgroundColor: '#f7eaec',
-                      color: '#b31e30',
+                      backgroundColor: '#fef2f2',
+                      color: '#dc2626',
+                      borderColor: '#dc2626',
+                      borderLeft: '3px solid #dc2626',
+                      transform: 'translateX(2px)',
                     },
                   }}
                 />

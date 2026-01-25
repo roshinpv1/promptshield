@@ -9,28 +9,28 @@ import Pipelines from './pages/Pipelines';
 import Executions from './pages/Executions';
 import Results from './pages/Results';
 
-// Enterprise Wells Fargo theme
+// SaaS-Grade Modern Theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#b31e30',
-      light: '#f7eaec',
-      dark: '#821622',
+      main: '#dc2626',
+      light: '#fef2f2',
+      dark: '#991b1b',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#FFD700',
-      light: '#FFE44D',
-      dark: '#E6C200',
-      contrastText: '#212529',
+      main: '#3b82f6',
+      light: '#dbeafe',
+      dark: '#2563eb',
+      contrastText: '#ffffff',
     },
     background: {
-      default: '#fafafa',
+      default: '#f8fafc',
       paper: '#ffffff',
     },
     text: {
-      primary: '#1a1a1a',
-      secondary: '#4a5568',
+      primary: '#0f172a',
+      secondary: '#64748b',
     },
     grey: {
       50: '#f9fafb',
@@ -45,50 +45,77 @@ const theme = createTheme({
       900: '#111827',
     },
     success: {
-      main: '#059669',
+      main: '#10b981',
       light: '#d1fae5',
+      dark: '#059669',
     },
     warning: {
-      main: '#d97706',
+      main: '#f59e0b',
       light: '#fef3c7',
+      dark: '#d97706',
     },
     error: {
-      main: '#dc2626',
+      main: '#ef4444',
       light: '#fee2e2',
+      dark: '#dc2626',
     },
     info: {
-      main: '#2563eb',
+      main: '#3b82f6',
       light: '#dbeafe',
+      dark: '#2563eb',
     },
   },
   typography: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
-    h4: {
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Inter", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
+    h1: {
+      fontWeight: 700,
+      letterSpacing: '-0.02em',
+      fontSize: '2.5rem',
+      lineHeight: 1.2,
+    },
+    h2: {
+      fontWeight: 700,
+      letterSpacing: '-0.02em',
+      fontSize: '2rem',
+      lineHeight: 1.2,
+    },
+    h3: {
       fontWeight: 600,
       letterSpacing: '-0.01em',
       fontSize: '1.75rem',
+      lineHeight: 1.3,
+    },
+    h4: {
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+      fontSize: '1.5rem',
+      lineHeight: 1.3,
     },
     h5: {
       fontWeight: 600,
       letterSpacing: '-0.01em',
-      fontSize: '1.5rem',
+      fontSize: '1.25rem',
+      lineHeight: 1.4,
     },
     h6: {
       fontWeight: 600,
       fontSize: '1.125rem',
+      lineHeight: 1.4,
     },
     body1: {
       fontSize: '0.9375rem',
       lineHeight: 1.6,
+      color: '#0f172a',
     },
     body2: {
       fontSize: '0.875rem',
       lineHeight: 1.5,
+      color: '#64748b',
     },
     button: {
-      fontWeight: 500,
+      fontWeight: 600,
       textTransform: 'none',
-      letterSpacing: '0.01em',
+      letterSpacing: '-0.01em',
     },
   },
   shape: {
@@ -112,22 +139,33 @@ const theme = createTheme({
         root: {
           textTransform: 'none',
           borderRadius: 0,
-          padding: '8px 20px',
+          padding: '10px 24px',
           fontSize: '0.875rem',
           fontWeight: 600,
-          boxShadow: '0 4px 14px 0 rgba(179, 30, 48, 0.15)',
-          transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+          letterSpacing: '-0.01em',
+          boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+          transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+          border: 'none',
           '&:hover': {
-            boxShadow: '0 8px 24px 0 rgba(179, 30, 48, 0.2)',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
             transform: 'translateY(-1px)',
           },
           '&:active': {
-            transform: 'scale(0.98)',
+            transform: 'translateY(0)',
+            boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
           },
         },
         contained: {
+          background: '#dc2626',
           '&:hover': {
-            backgroundColor: '#9a1a29',
+            background: '#b91c1c',
+          },
+        },
+        outlined: {
+          borderWidth: '1.5px',
+          '&:hover': {
+            borderWidth: '1.5px',
+            backgroundColor: 'rgba(220, 38, 38, 0.04)',
           },
         },
       },
@@ -136,26 +174,27 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 0,
-          boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-          border: '1px solid #e5e7eb',
-          transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+          border: '1px solid #e2e8f0',
+          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
           position: 'relative',
           overflow: 'hidden',
+          background: '#ffffff',
           '&::before': {
             content: '""',
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
-            height: '2px',
-            background: '#b31e30',
+            height: '3px',
+            background: '#dc2626',
             opacity: 0,
-            transition: 'opacity 300ms ease',
+            transition: 'opacity 200ms ease',
           },
           '&:hover': {
-            borderColor: '#b31e30',
+            borderColor: '#dc2626',
             boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-            transform: 'translateY(-2px)',
+            transform: 'translateY(-1px)',
             '&::before': {
               opacity: 1,
             },
@@ -169,6 +208,11 @@ const theme = createTheme({
           borderRadius: 0,
           fontWeight: 500,
           fontSize: '0.8125rem',
+          height: '28px',
+          transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+          '&:hover': {
+            transform: 'scale(1.02)',
+          },
         },
       },
     },
@@ -176,7 +220,8 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 0,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+          border: '1px solid #e2e8f0',
         },
       },
     },
@@ -185,6 +230,18 @@ const theme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: 0,
+            transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#94a3b8',
+              },
+            },
+            '&.Mui-focused': {
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderWidth: '2px',
+                borderColor: '#dc2626',
+              },
+            },
           },
         },
       },
@@ -193,6 +250,11 @@ const theme = createTheme({
       styleOverrides: {
         paper: {
           borderRadius: 0,
+          boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+          border: '1px solid #e2e8f0',
+        },
+        paperScrollPaper: {
+          maxHeight: '90vh',
         },
       },
     },
@@ -210,8 +272,17 @@ const theme = createTheme({
           '&:before': {
             display: 'none',
           },
-          boxShadow: 'none',
-          border: '1px solid #e5e7eb',
+          boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+          border: '1px solid #e2e8f0',
+          '&:first-of-type': {
+            borderRadius: 0,
+          },
+          '&:last-of-type': {
+            borderRadius: 0,
+          },
+          '&.Mui-expanded': {
+            margin: '16px 0',
+          },
         },
       },
     },
@@ -219,11 +290,14 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiTableCell-head': {
-            backgroundColor: '#f9fafb',
+            backgroundColor: '#f8fafc',
             fontWeight: 600,
             fontSize: '0.8125rem',
-            color: '#1a1a1a',
-            borderBottom: '2px solid #e5e7eb',
+            color: '#0f172a',
+            borderBottom: '2px solid #e2e8f0',
+            letterSpacing: '0.01em',
+            textTransform: 'uppercase',
+            padding: '16px',
           },
         },
       },
@@ -231,8 +305,22 @@ const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: '1px solid #e5e7eb',
-          padding: '12px 16px',
+          borderBottom: '1px solid #e2e8f0',
+          padding: '16px',
+          fontSize: '0.875rem',
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+          '&:hover': {
+            backgroundColor: '#f8fafc',
+          },
+          '&:last-child td': {
+            borderBottom: 'none',
+          },
         },
       },
     },

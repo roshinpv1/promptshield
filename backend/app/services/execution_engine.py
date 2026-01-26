@@ -10,6 +10,8 @@ from app.db.database import SessionLocal
 from app.db.models import Execution, Pipeline, LLMConfig, Result
 from app.services.normalizer import ResultNormalizer
 from app.services.library_adapters import get_library_adapter
+from app.services.embedding_generator import EmbeddingGenerator
+from app.services.agent_trace_extractor import AgentTraceExtractor
 
 
 class ExecutionEngine:
@@ -96,7 +98,16 @@ class ExecutionEngine:
                 
                 for raw_result in library_results:
                     try:
-                        normalized = normalizer.normalize(raw_result, execution_id)
+                        # Normalize result (returns Pydantic model, convert to dict for database)
+                        normalized_model = normalizer.normalize(raw_result, execution_id)
+                        # Convert Pydantic model to dict for database insertion
+                        # Use model_dump() for Pydantic v2, fallback to dict() for v1
+                        if hasattr(normalized_model, 'model_dump'):
+                            normalized = normalized_model.model_dump()
+                        elif hasattr(normalized_model, 'dict'):
+                            normalized = normalized_model.dict()
+                        else:
+                            normalized = normalized_model  # Already a dict
                         db_result = Result(**normalized)
                         db.add(db_result)
                         total_results_added += 1
@@ -120,6 +131,28 @@ class ExecutionEngine:
             
             logger.info(f"Execution {execution_id} completed with {total_results_added} results")
             print(f"[EXECUTION] Execution {execution_id} completed with {total_results_added} results")
+            
+            # Generate embeddings asynchronously (non-blocking)
+            try:
+                logger.info(f"Starting embedding generation for execution {execution_id}")
+                print(f"[EXECUTION] Starting embedding generation for execution {execution_id}")
+                # Run in background task - use asyncio.create_task in async context
+                # Since we're already in an async function, we can create the task directly
+                asyncio.create_task(
+                    ExecutionEngine._generate_embeddings_async(execution_id)
+                )
+            except Exception as e:
+                logger.warning(f"Failed to start embedding generation: {e}")
+                # Don't fail execution if embedding generation fails
+            
+            # Extract agent traces if enabled
+            try:
+                logger.info(f"Extracting agent traces for execution {execution_id}")
+                print(f"[EXECUTION] Extracting agent traces for execution {execution_id}")
+                AgentTraceExtractor.extract_traces_from_execution(execution_id)
+            except Exception as e:
+                logger.warning(f"Failed to extract agent traces: {e}")
+                # Don't fail execution if trace extraction fails
             
         except Exception as e:
             logger.error(f"Execution {execution_id} failed with error: {e}")
@@ -164,4 +197,16 @@ class ExecutionEngine:
         except Exception as e:
             print(f"Error executing library {library_name}: {e}")
             return []
+    
+    @staticmethod
+    async def _generate_embeddings_async(execution_id: int):
+        """Async wrapper for embedding generation via API"""
+        try:
+            # Call async embedding generation directly
+            await EmbeddingGenerator.generate_embeddings(execution_id)
+            logger.info(f"Embedding generation completed for execution {execution_id}")
+        except Exception as e:
+            logger.error(f"Error generating embeddings for execution {execution_id}: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
 

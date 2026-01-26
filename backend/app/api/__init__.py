@@ -1,7 +1,7 @@
 """API routes"""
 
 from fastapi import APIRouter
-from app.api.endpoints import llm_configs, pipelines, executions, results, reports
+from app.api.endpoints import llm_configs, pipelines, executions, results, reports, baselines, drift
 
 api_router = APIRouter()
 
@@ -10,4 +10,6 @@ api_router.include_router(pipelines.router, prefix="/pipelines", tags=["Pipeline
 api_router.include_router(executions.router, prefix="/executions", tags=["Executions"])
 api_router.include_router(results.router, prefix="/results", tags=["Results"])
 api_router.include_router(reports.router, prefix="/reports", tags=["Reports"])
+api_router.include_router(baselines.router, prefix="/baselines", tags=["Baselines"])
+api_router.include_router(drift.router, prefix="/drift", tags=["Drift Detection"])
 

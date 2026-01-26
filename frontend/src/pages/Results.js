@@ -23,10 +23,8 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material';
-import {
-  ExpandMore as ExpandMoreIcon,
-  GetApp as GetAppIcon,
-} from '@mui/icons-material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconNames } from '../utils/icons';
 import axios from 'axios';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
@@ -35,6 +33,11 @@ function Results() {
   const { executionId } = useParams();
   const [results, setResults] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [driftSummary, setDriftSummary] = useState(null);
+  const [driftResults, setDriftResults] = useState([]);
+  const [baselines, setBaselines] = useState([]);
+  const [selectedBaseline, setSelectedBaseline] = useState('');
+  const [comparing, setComparing] = useState(false);
   const [filters, setFilters] = useState({
     severity: '',
     library: '',
@@ -66,10 +69,41 @@ function Results() {
     }
   }, [executionId]);
 
+  const fetchDriftSummary = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_BASE}/drift/execution/${executionId}/summary`);
+      setDriftSummary(response.data);
+    } catch (error) {
+      // Drift summary may not exist, that's okay
+      setDriftSummary(null);
+    }
+  }, [executionId]);
+
+  const fetchDriftResults = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_BASE}/drift/execution/${executionId}`);
+      setDriftResults(response.data);
+    } catch (error) {
+      setDriftResults([]);
+    }
+  }, [executionId]);
+
+  const fetchBaselines = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_BASE}/baselines`);
+      setBaselines(response.data);
+    } catch (error) {
+      console.error('Error fetching baselines:', error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchResults();
     fetchSummary();
-  }, [executionId, fetchResults, fetchSummary]);
+    fetchDriftSummary();
+    fetchDriftResults();
+    fetchBaselines();
+  }, [executionId, fetchResults, fetchSummary, fetchDriftSummary, fetchDriftResults, fetchBaselines]);
 
   useEffect(() => {
     fetchResults();
@@ -89,6 +123,39 @@ function Results() {
         return '#2563eb';
       default:
         return '#6b7280';
+    }
+  };
+
+  const handleCompareWithBaseline = async () => {
+    if (!selectedBaseline) {
+      alert('Please select a baseline');
+      return;
+    }
+
+    setComparing(true);
+    try {
+      const baseline = baselines.find(b => b.id === parseInt(selectedBaseline));
+      if (!baseline) {
+        alert('Baseline not found');
+        return;
+      }
+
+      await axios.post(`${API_BASE}/drift/compare`, {
+        execution_id: parseInt(executionId),
+        baseline_execution_id: baseline.execution_id,
+        baseline_mode: 'explicit',
+      });
+
+      // Poll for results
+      setTimeout(() => {
+        fetchDriftSummary();
+        fetchDriftResults();
+        setComparing(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error comparing with baseline:', error);
+      alert(`Error: ${error.response?.data?.detail || error.message}`);
+      setComparing(false);
     }
   };
 
@@ -146,11 +213,20 @@ function Results() {
           }}
         >
           Execution Results - #{executionId}
+          {driftSummary && driftSummary.total_drift_results > 0 && (
+            <Chip
+              icon={<FontAwesomeIcon icon={IconNames.faExclamationTriangle} />}
+              label="Drift Detected"
+              color="warning"
+              size="small"
+              sx={{ ml: 2, fontWeight: 600 }}
+            />
+          )}
         </Typography>
         <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
           <Button
             variant="outlined"
-            startIcon={<GetAppIcon />}
+            startIcon={<FontAwesomeIcon icon={IconNames.faDownload} />}
             onClick={() => handleExport('json')}
             sx={{ borderRadius: 0, height: '40px' }}
           >
@@ -158,7 +234,7 @@ function Results() {
           </Button>
           <Button
             variant="outlined"
-            startIcon={<GetAppIcon />}
+            startIcon={<FontAwesomeIcon icon={IconNames.faDownload} />}
             onClick={() => handleExport('html')}
             sx={{ borderRadius: 0, height: '40px' }}
           >
@@ -166,7 +242,7 @@ function Results() {
           </Button>
           <Button
             variant="outlined"
-            startIcon={<GetAppIcon />}
+            startIcon={<FontAwesomeIcon icon={IconNames.faDownload} />}
             onClick={() => handleExport('pdf')}
             sx={{ borderRadius: 0, height: '40px' }}
           >
@@ -175,21 +251,60 @@ function Results() {
         </Box>
       </Box>
 
+      {/* Baseline Comparison Section */}
+      <Card sx={{ 
+        mb: 4,
+        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        border: '1px solid #e2e8f0',
+        borderRadius: 0,
+      }}>
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, fontSize: '1.125rem', color: '#0f172a' }}>
+            Compare with Baseline
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+            <FormControl sx={{ minWidth: 250 }}>
+              <InputLabel>Select Baseline</InputLabel>
+              <Select
+                value={selectedBaseline}
+                onChange={(e) => setSelectedBaseline(e.target.value)}
+                label="Select Baseline"
+              >
+                <MenuItem value="">Previous Execution</MenuItem>
+                {baselines.map((baseline) => (
+                  <MenuItem key={baseline.id} value={baseline.id}>
+                    {baseline.name} {baseline.baseline_tag && `(${baseline.baseline_tag})`}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              startIcon={<FontAwesomeIcon icon={IconNames.faExchangeAlt} />}
+              onClick={handleCompareWithBaseline}
+              disabled={comparing || !selectedBaseline}
+              sx={{ minWidth: '180px', height: '40px' }}
+            >
+              {comparing ? 'Comparing...' : 'Compare'}
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+
       {summary && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Card sx={{ 
+              backgroundColor: '#ffffff',
               borderLeft: '4px solid', 
               borderLeftColor: summary.safety_score >= 80 ? '#10b981' : summary.safety_score >= 60 ? '#f59e0b' : '#dc2626',
               boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
               border: '1px solid #e2e8f0',
               borderRadius: 0,
               height: '100%',
-              position: 'relative',
-              overflow: 'hidden',
             }}>
-              <CardContent sx={{ p: 4 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   Safety Score
                 </Typography>
                 <Typography variant="h2" sx={{ 
@@ -220,8 +335,67 @@ function Results() {
               </CardContent>
             </Card>
           </Grid>
+          {driftSummary && (
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ 
+                borderLeft: '4px solid', 
+                borderLeftColor: driftSummary.drift_score !== null && driftSummary.drift_score !== undefined
+                  ? (driftSummary.drift_score >= 90 ? '#10b981' : driftSummary.drift_score >= 75 ? '#3b82f6' : driftSummary.drift_score >= 60 ? '#f59e0b' : '#dc2626')
+                  : '#9ca3af',
+                boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+                border: '1px solid #e2e8f0',
+                borderRadius: 0,
+                height: '100%',
+                position: 'relative',
+                overflow: 'hidden',
+              }}>
+                <CardContent sx={{ p: 4 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Drift Score
+                  </Typography>
+                  <Typography variant="h2" sx={{ 
+                    color: driftSummary.drift_score !== null && driftSummary.drift_score !== undefined
+                      ? (driftSummary.drift_score >= 90 ? '#10b981' : driftSummary.drift_score >= 75 ? '#3b82f6' : driftSummary.drift_score >= 60 ? '#f59e0b' : '#dc2626')
+                      : '#6b7280', 
+                    fontWeight: 700,
+                    mb: 1,
+                    fontSize: '3rem',
+                    lineHeight: 1,
+                    letterSpacing: '-0.02em',
+                  }}>
+                    {driftSummary.drift_score !== null && driftSummary.drift_score !== undefined 
+                      ? driftSummary.drift_score.toFixed(1) 
+                      : 'N/A'}
+                  </Typography>
+                  {driftSummary.drift_grade ? (
+                    <Typography variant="h6" sx={{ 
+                      color: driftSummary.drift_score >= 90 ? '#10b981' : driftSummary.drift_score >= 75 ? '#3b82f6' : driftSummary.drift_score >= 60 ? '#f59e0b' : '#dc2626',
+                      fontWeight: 600,
+                      mb: 1.5,
+                      fontSize: '1.25rem',
+                    }}>
+                      Grade: {driftSummary.drift_grade}
+                    </Typography>
+                  ) : (
+                    <Typography variant="body2" sx={{ 
+                      color: '#64748b',
+                      mb: 1.5,
+                      fontSize: '0.875rem',
+                      fontStyle: 'italic',
+                    }}>
+                      No comparison yet
+                    </Typography>
+                  )}
+                  <Typography variant="caption" sx={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>
+                    Scale: 0-100 (100 = Stable)
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
           <Grid item xs={12} sm={6} md={3}>
             <Card sx={{ 
+              backgroundColor: '#ffffff',
               boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
               border: '1px solid #e2e8f0',
               borderRadius: 0,
@@ -239,13 +413,14 @@ function Results() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Card sx={{ 
+              backgroundColor: '#ffffff',
               boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
               border: '1px solid #e2e8f0',
               borderRadius: 0,
               height: '100%',
             }}>
-              <CardContent sx={{ p: 4 }}>
-                <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600, fontSize: '1.125rem', color: '#0f172a', letterSpacing: '-0.01em' }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="body2" gutterBottom sx={{ mb: 2, fontWeight: 600, fontSize: '0.875rem', color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   By Severity
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -264,6 +439,183 @@ function Results() {
             </Card>
           </Grid>
         </Grid>
+      )}
+
+      {/* Sub-Scores Section - Safety Scores by Library and Category */}
+      {summary && (summary.safety_scores_by_library || summary.safety_scores_by_category) && (
+        Object.keys(summary.safety_scores_by_library || {}).length > 0 || 
+        Object.keys(summary.safety_scores_by_category || {}).length > 0
+      ) && (
+        <Box sx={{ mb: 4 }}>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              mb: 3,
+              color: '#0f172a',
+              fontWeight: 700,
+              fontSize: '1.5rem',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Detailed Score Breakdown
+          </Typography>
+
+          <Grid container spacing={3}>
+            {/* Safety Scores by Library */}
+            {summary.safety_scores_by_library && Object.keys(summary.safety_scores_by_library).length > 0 && (
+              <Grid item xs={12} lg={6}>
+                <Card sx={{ 
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: 0,
+                  height: '100%',
+                }}>
+                  <CardContent sx={{ p: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                      <FontAwesomeIcon 
+                        icon={IconNames.faCode} 
+                        style={{ fontSize: '1.25rem', color: '#3b82f6', marginRight: '12px' }}
+                      />
+                      <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.125rem', color: '#0f172a' }}>
+                        Safety Scores by Library
+                      </Typography>
+                    </Box>
+                    <Grid container spacing={2}>
+                      {Object.entries(summary.safety_scores_by_library).map(([library, score]) => {
+                        const grade = summary.safety_grades_by_library?.[library] || 'N/A';
+                        const scoreColor = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#dc2626';
+                        return (
+                          <Grid item xs={12} sm={6} key={library}>
+                            <Card sx={{ 
+                              borderLeft: '4px solid',
+                              borderLeftColor: scoreColor,
+                              backgroundColor: '#f8fafc',
+                              boxShadow: 'none',
+                              border: '1px solid #e2e8f0',
+                              borderRadius: 0,
+                            }}>
+                              <CardContent sx={{ p: 2 }}>
+                                <Typography variant="body2" sx={{ 
+                                  fontWeight: 600, 
+                                  mb: 1, 
+                                  fontSize: '0.75rem', 
+                                  color: '#64748b',
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.05em',
+                                }}>
+                                  {library}
+                                </Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                                  <Typography variant="h4" sx={{ 
+                                    color: scoreColor,
+                                    fontWeight: 700,
+                                    fontSize: '2rem',
+                                    lineHeight: 1,
+                                  }}>
+                                    {score.toFixed(1)}
+                                  </Typography>
+                                  <Chip 
+                                    label={`Grade ${grade}`}
+                                    size="small"
+                                    sx={{
+                                      backgroundColor: scoreColor,
+                                      color: 'white',
+                                      fontWeight: 600,
+                                      fontSize: '0.75rem',
+                                      height: '24px',
+                                    }}
+                                  />
+                                </Box>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
+
+            {/* Safety Scores by Category */}
+            {summary.safety_scores_by_category && Object.keys(summary.safety_scores_by_category).length > 0 && (
+              <Grid item xs={12} lg={6}>
+                <Card sx={{ 
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: 0,
+                  height: '100%',
+                }}>
+                  <CardContent sx={{ p: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                      <FontAwesomeIcon 
+                        icon={IconNames.faShieldAlt} 
+                        style={{ fontSize: '1.25rem', color: '#8b5cf6', marginRight: '12px' }}
+                      />
+                      <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.125rem', color: '#0f172a' }}>
+                        Safety Scores by Category
+                      </Typography>
+                    </Box>
+                    <Grid container spacing={2}>
+                      {Object.entries(summary.safety_scores_by_category).map(([category, score]) => {
+                        const grade = summary.safety_grades_by_category?.[category] || 'N/A';
+                        const scoreColor = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#dc2626';
+                        return (
+                          <Grid item xs={12} sm={6} key={category}>
+                            <Card sx={{ 
+                              borderLeft: '4px solid',
+                              borderLeftColor: scoreColor,
+                              backgroundColor: '#f8fafc',
+                              boxShadow: 'none',
+                              border: '1px solid #e2e8f0',
+                              borderRadius: 0,
+                            }}>
+                              <CardContent sx={{ p: 2 }}>
+                                <Typography variant="body2" sx={{ 
+                                  fontWeight: 600, 
+                                  mb: 1, 
+                                  fontSize: '0.75rem', 
+                                  color: '#64748b',
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.05em',
+                                }}>
+                                  {category.replace(/_/g, ' ')}
+                                </Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                                  <Typography variant="h4" sx={{ 
+                                    color: scoreColor,
+                                    fontWeight: 700,
+                                    fontSize: '2rem',
+                                    lineHeight: 1,
+                                  }}>
+                                    {score.toFixed(1)}
+                                  </Typography>
+                                  <Chip 
+                                    label={`Grade ${grade}`}
+                                    size="small"
+                                    sx={{
+                                      backgroundColor: scoreColor,
+                                      color: 'white',
+                                      fontWeight: 600,
+                                      fontSize: '0.75rem',
+                                      height: '24px',
+                                    }}
+                                  />
+                                </Box>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
+          </Grid>
+        </Box>
       )}
 
       <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -314,52 +666,87 @@ function Results() {
         </FormControl>
       </Box>
 
-      <TableContainer 
-        component={Paper}
-        sx={{ 
-          borderRadius: 0,
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-          border: '1px solid #e2e8f0',
-          overflow: 'auto',
-        }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Library</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Severity</TableCell>
-              <TableCell>Risk Type</TableCell>
-              <TableCell>Confidence</TableCell>
-              <TableCell>Details</TableCell>
-            </TableRow>
-          </TableHead>
+      <Card sx={{ 
+        backgroundColor: '#ffffff',
+        borderRadius: 0,
+        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        border: '1px solid #e2e8f0',
+      }}>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: '#f8fafc' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Library
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Category
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Severity
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Risk Type
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Confidence
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Details
+                </TableCell>
+              </TableRow>
+            </TableHead>
           <TableBody>
             {results.map((result) => (
-              <TableRow key={result.id}>
+              <TableRow key={result.id} sx={{ '&:hover': { backgroundColor: '#f8fafc' } }}>
                 <TableCell>
-                  <Chip label={result.library} size="small" />
+                  <Chip 
+                    label={result.library} 
+                    size="small"
+                    sx={{
+                      height: 24,
+                      fontSize: '0.75rem',
+                      borderRadius: 0,
+                      backgroundColor: '#f8fafc',
+                      fontWeight: 500,
+                    }}
+                  />
                 </TableCell>
-                <TableCell>{result.test_category}</TableCell>
+                <TableCell>
+                  <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.875rem' }}>
+                    {result.test_category}
+                  </Typography>
+                </TableCell>
                 <TableCell>
                   <Chip
                     label={result.severity}
                     size="small"
                     sx={{
+                      height: 24,
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
                       backgroundColor: getSeverityColor(result.severity),
                       color: 'white',
+                      borderRadius: 0,
+                      textTransform: 'capitalize',
                     }}
                   />
                 </TableCell>
-                <TableCell>{result.risk_type}</TableCell>
                 <TableCell>
-                  {result.confidence_score
-                    ? (result.confidence_score * 100).toFixed(1) + '%'
-                    : '-'}
+                  <Typography variant="body2" sx={{ color: '#1e293b', fontSize: '0.875rem' }}>
+                    {result.risk_type}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 600 }}>
+                    {result.confidence_score
+                      ? (result.confidence_score * 100).toFixed(1) + '%'
+                      : '-'}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<FontAwesomeIcon icon={IconNames.faChevronDown} />}>
                       <Typography variant="body2">View Evidence</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -391,6 +778,87 @@ function Results() {
           </TableBody>
         </Table>
       </TableContainer>
+      </Card>
+
+      {/* Drift Results Table */}
+      {driftResults.length > 0 && (
+        <Box sx={{ mt: 5 }}>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              mb: 3,
+              color: '#0f172a',
+              fontWeight: 700,
+              fontSize: '1.5rem',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Drift Detection Results
+          </Typography>
+          <TableContainer 
+            component={Paper}
+            sx={{ 
+              borderRadius: 0,
+              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+              border: '1px solid #e2e8f0',
+              overflow: 'auto',
+            }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Drift Type</TableCell>
+                  <TableCell>Metric</TableCell>
+                  <TableCell>Value</TableCell>
+                  <TableCell>Threshold</TableCell>
+                  <TableCell>Severity</TableCell>
+                  <TableCell>Confidence</TableCell>
+                  <TableCell>Details</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {driftResults.map((drift) => (
+                  <TableRow key={drift.id}>
+                    <TableCell>
+                      <Chip label={drift.drift_type} size="small" />
+                    </TableCell>
+                    <TableCell>{drift.metric}</TableCell>
+                    <TableCell>{drift.value.toFixed(4)}</TableCell>
+                    <TableCell>{drift.threshold.toFixed(4)}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={drift.severity}
+                        size="small"
+                        sx={{
+                          backgroundColor: getSeverityColor(drift.severity),
+                          color: 'white',
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {drift.confidence
+                        ? (drift.confidence * 100).toFixed(1) + '%'
+                        : '-'}
+                    </TableCell>
+                    <TableCell>
+                      <Accordion>
+                        <AccordionSummary expandIcon={<FontAwesomeIcon icon={IconNames.faChevronDown} />}>
+                          <Typography variant="body2">View Details</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography variant="body2" sx={{ fontFamily: 'monospace', p: 1, bgcolor: '#f9fafb', borderRadius: 0, whiteSpace: 'pre-wrap' }}>
+                            {JSON.stringify(drift.details, null, 2)}
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
     </Box>
   );
 }

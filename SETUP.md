@@ -58,15 +58,46 @@ This will install:
 - FastAPI and Uvicorn
 - SQLAlchemy for database
 - ReportLab for PDF generation
+- **Drift Detection Libraries**: sentence-transformers, scipy, numpy, scikit-learn, evidently
+- **Agent Frameworks**: langchain, pyautogen (optional)
 - And other required packages
 
-#### 2.4 Create Required Directories
+**Note:** Installing sentence-transformers may take a few minutes as it downloads ML models.
+
+#### 2.4 Run Database Migrations (v1.1)
+
+**Important:** For v1.1, you need to run database migrations to create the new drift detection tables:
+
+```bash
+# Make sure you're in the backend directory
+cd backend
+
+# Run migrations
+alembic upgrade head
+```
+
+This will create the following new tables:
+- `baselines` - Baseline execution references
+- `embeddings` - Embedding vectors for drift detection
+- `drift_results` - Drift detection results
+- `agent_traces` - Agent execution traces
+
+**If you get an error about Alembic not being installed:**
+```bash
+pip install alembic
+```
+
+**If you're upgrading from v1.0:**
+- The migration will add new tables without affecting existing data
+- Your existing executions and results will remain intact
+
+#### 2.5 Create Required Directories
 
 ```bash
 mkdir -p results reports
 ```
 
-#### 2.5 Start Backend Server
+#### 2.6 Start Backend Server
 
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
@@ -160,7 +191,7 @@ Once both servers are running:
 2. **Create a Pipeline:**
    - Go to "Pipelines"
    - Click "New Pipeline"
-   - Select libraries (Garak, PyRIT, LangTest)
+   - Select libraries (Garak, PyRIT, LangTest, Promptfoo)
    - Choose test categories
    - Link to your LLM config
    - Save
@@ -175,6 +206,55 @@ Once both servers are running:
    - Click on an execution to view results
    - Filter by severity, library, or category
    - Export reports (JSON, PDF, HTML)
+
+## Using Drift Detection (v1.1)
+
+### Creating a Baseline
+
+1. **Complete an Execution:**
+   - Run an execution and wait for it to complete
+   - This becomes your reference point
+
+2. **Set as Baseline:**
+   - In the Executions page, click the star icon (⭐) next to a completed execution
+   - Enter a baseline name (e.g., "Production Baseline v1.0")
+   - Optionally add a tag (e.g., "golden-run")
+   - Click "Create Baseline"
+
+### Comparing with Baseline
+
+1. **In Results Page:**
+   - Open the results page for a completed execution
+   - Scroll to "Compare with Baseline" section
+
+2. **Select Baseline:**
+   - Choose a baseline from the dropdown (or use "Previous Execution")
+   - Click "Compare" button
+
+3. **View Drift Results:**
+   - Drift Score card will appear (similar to Safety Score)
+   - Review drift results table showing:
+     - Drift type (output, safety, distribution, embedding, agent_tool)
+     - Metric used
+     - Drift value vs threshold
+     - Severity level
+   - Filter and explore detailed drift findings
+
+### Understanding Drift Scores
+
+- **Drift Score (0-100)**: Higher is better
+  - 90-100 (Grade A): Stable - No significant drift
+  - 75-89 (Grade B): Minor Drift - Acceptable
+  - 60-74 (Grade C): Risk - Review recommended
+  - 45-59 (Grade D): Significant Drift
+  - <45 (Grade F): Unstable - Action required
+
+- **Drift Types:**
+  - **Output Drift**: Changes in response structure/content
+  - **Safety Drift**: Changes in safety scores and severity counts
+  - **Distribution Drift**: Statistical shifts in response patterns
+  - **Embedding Drift**: Semantic meaning changes
+  - **Agent/Tool Drift**: Changes in agent behavior and tool usage
 
 ## Troubleshooting
 
@@ -193,7 +273,24 @@ uvicorn main:app --reload --port 8001
 ```bash
 # Delete existing database and restart
 rm backend/promptshield.db
+# Run migrations to recreate tables
+alembic upgrade head
 # Then restart the server
+```
+
+**Migration errors:**
+```bash
+# If migration fails, check Alembic is installed
+pip install alembic
+
+# Check migration status
+alembic current
+
+# View migration history
+alembic history
+
+# If needed, manually create tables (not recommended)
+# The app will auto-create tables on first run, but migrations are preferred
 ```
 
 **Import errors:**

@@ -2,8 +2,9 @@
 Result Normalization Layer - Converts library outputs to common schema
 """
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Union
 from datetime import datetime
+from app.schemas.normalized_result import NormalizedResult
 
 
 class ResultNormalizer:
@@ -19,22 +20,25 @@ class ResultNormalizer:
         "error": "high",
     }
     
-    def normalize(self, raw_result: Dict[str, Any], execution_id: int) -> Dict[str, Any]:
+    def normalize(
+        self, 
+        raw_result: Dict[str, Any], 
+        execution_id: int,
+        return_dict: bool = False
+    ) -> Union[NormalizedResult, Dict[str, Any]]:
         """
         Normalize a raw result from any library to common schema
         
-        Common schema:
-        - execution_id: int
-        - library: str
-        - test_category: str
-        - severity: str (critical, high, medium, low, info)
-        - risk_type: str
-        - evidence_prompt: str (optional)
-        - evidence_response: str (optional)
-        - confidence_score: float (optional)
-        - extra_metadata: dict (optional)
+        Args:
+            raw_result: Raw result dictionary from library adapter
+            execution_id: Execution ID this result belongs to
+            return_dict: If True, return dict instead of Pydantic model (for backward compatibility)
+        
+        Returns:
+            NormalizedResult (Pydantic model) or dict if return_dict=True
         """
-        normalized = {
+        # Extract and normalize fields
+        normalized_data = {
             "execution_id": execution_id,
             "library": raw_result.get("library", "unknown"),
             "test_category": raw_result.get("test_category", "unknown"),
@@ -48,9 +52,23 @@ class ResultNormalizer:
         
         # Preserve original library-specific fields in metadata
         if "metadata" not in raw_result:
-            normalized["extra_metadata"]["raw"] = raw_result
+            normalized_data["extra_metadata"]["raw"] = raw_result
         
-        return normalized
+        # Validate and create Pydantic model
+        try:
+            normalized_result = NormalizedResult(**normalized_data)
+            
+            # Return dict if requested (for backward compatibility)
+            if return_dict:
+                return normalized_result.dict()
+            
+            return normalized_result
+        except Exception as e:
+            # If validation fails, log and return dict with warning
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Validation failed for normalized result: {e}. Returning dict.")
+            return normalized_data
     
     def _normalize_severity(self, severity: str) -> str:
         """Normalize severity to standard levels"""

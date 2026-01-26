@@ -18,12 +18,10 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Card,
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-} from '@mui/icons-material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconNames } from '../utils/icons';
 import axios from 'axios';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
@@ -138,7 +136,7 @@ function LLMConfigs() {
         </Typography>
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
+          startIcon={<FontAwesomeIcon icon={IconNames.faPlus} />}
           onClick={() => handleOpen()}
           sx={{ minWidth: '200px', height: '40px' }}
         >
@@ -146,37 +144,49 @@ function LLMConfigs() {
         </Button>
       </Box>
 
-      <TableContainer 
-        component={Paper}
-        sx={{ 
-          borderRadius: 0,
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-          border: '1px solid #e2e8f0',
-          overflow: 'auto',
-        }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Endpoint URL</TableCell>
-              <TableCell>Method</TableCell>
-              <TableCell>Environment</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
+      <Card sx={{ 
+        backgroundColor: '#ffffff',
+        borderRadius: 0,
+        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        border: '1px solid #e2e8f0',
+      }}>
+        <TableContainer sx={{ overflow: 'auto' }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: '#f8fafc' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Name
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Endpoint URL
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Method
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Environment
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHead>
           <TableBody>
             {configs.map((config) => (
               <TableRow 
                 key={config.id}
-                sx={{
-                  '&:hover': {
-                    bgcolor: '#f9fafb',
-                  },
-                }}
+                sx={{ '&:hover': { backgroundColor: '#f8fafc' } }}
               >
-                <TableCell sx={{ fontWeight: 500 }}>{config.name}</TableCell>
-                <TableCell sx={{ color: '#4a5568' }}>{config.endpoint_url}</TableCell>
+                <TableCell>
+                  <Typography variant="body2" sx={{ color: '#1e293b', fontSize: '0.875rem', fontWeight: 500 }}>
+                    {config.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.875rem' }}>
+                    {config.endpoint_url}
+                  </Typography>
+                </TableCell>
                 <TableCell>
                   <Chip 
                     label={config.method} 
@@ -209,7 +219,7 @@ function LLMConfigs() {
                       },
                     }}
                   >
-                    <EditIcon fontSize="small" />
+                    <FontAwesomeIcon icon={IconNames.faEdit} style={{ fontSize: 16 }} />
                   </IconButton>
                   <IconButton 
                     size="small" 
@@ -222,7 +232,7 @@ function LLMConfigs() {
                       },
                     }}
                   >
-                    <DeleteIcon fontSize="small" />
+                    <FontAwesomeIcon icon={IconNames.faTrash} style={{ fontSize: 16 }} />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -230,6 +240,7 @@ function LLMConfigs() {
           </TableBody>
         </Table>
       </TableContainer>
+      </Card>
 
       <Dialog 
         open={open} 

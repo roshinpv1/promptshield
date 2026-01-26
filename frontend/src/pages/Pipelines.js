@@ -21,13 +21,10 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Card,
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  PlayArrow as PlayArrowIcon,
-} from '@mui/icons-material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconNames } from '../utils/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -193,7 +190,7 @@ function Pipelines() {
         </Typography>
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
+          startIcon={<FontAwesomeIcon icon={IconNames.faPlus} />}
           onClick={() => handleOpen()}
           sx={{ minWidth: '160px', height: '40px' }}
         >
@@ -201,28 +198,36 @@ function Pipelines() {
         </Button>
       </Box>
 
-      <TableContainer 
-        component={Paper}
-        sx={{ 
-          borderRadius: 0,
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-          border: '1px solid #e2e8f0',
-          overflow: 'auto',
-        }}
-      >
+      <Card sx={{ 
+        backgroundColor: '#ffffff',
+        borderRadius: 0,
+        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        border: '1px solid #e2e8f0',
+      }}>
+        <TableContainer sx={{ overflow: 'auto' }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Libraries</TableCell>
-              <TableCell>Test Categories</TableCell>
-              <TableCell>Template</TableCell>
-              <TableCell>Actions</TableCell>
+            <TableRow sx={{ backgroundColor: '#f8fafc' }}>
+              <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Name
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Libraries
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Test Categories
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Template
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {pipelines.map((pipeline) => (
-              <TableRow key={pipeline.id}>
+              <TableRow key={pipeline.id} sx={{ '&:hover': { backgroundColor: '#f8fafc' } }}>
                 <TableCell>{pipeline.name}</TableCell>
                 <TableCell>
                   {pipeline.libraries.map((lib) => (
@@ -246,13 +251,13 @@ function Pipelines() {
                 </TableCell>
                 <TableCell>
                   <IconButton size="small" onClick={() => handleExecute(pipeline.id)}>
-                    <PlayArrowIcon />
+                    <FontAwesomeIcon icon={IconNames.faPlay} />
                   </IconButton>
                   <IconButton size="small" onClick={() => handleOpen(pipeline)}>
-                    <EditIcon />
+                    <FontAwesomeIcon icon={IconNames.faEdit} />
                   </IconButton>
                   <IconButton size="small" onClick={() => handleDelete(pipeline.id)}>
-                    <DeleteIcon />
+                    <FontAwesomeIcon icon={IconNames.faTrash} />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -260,6 +265,7 @@ function Pipelines() {
           </TableBody>
         </Table>
       </TableContainer>
+      </Card>
 
       <Dialog 
         open={open} 

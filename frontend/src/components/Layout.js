@@ -17,23 +17,16 @@ import {
   InputAdornment,
   Badge,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import SettingsIcon from '@mui/icons-material/Settings';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import PersonIcon from '@mui/icons-material/Person';
-import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ChatIcon from '@mui/icons-material/Chat';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Icons, IconNames } from '../utils/icons';
 
 const drawerWidth = 280;
 
 const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-  { text: 'Pipelines', icon: <AccountTreeIcon />, path: '/pipelines' },
-  { text: 'Executions', icon: <PlayArrowIcon />, path: '/executions' },
-  { text: 'LLM Configs', icon: <SettingsIcon />, path: '/llm-configs' },
+  { text: 'Dashboard', icon: <FontAwesomeIcon icon={IconNames.faDashboard} />, path: '/' },
+  { text: 'Pipelines', icon: <FontAwesomeIcon icon={IconNames.faProjectDiagram} />, path: '/pipelines' },
+  { text: 'Executions', icon: <FontAwesomeIcon icon={IconNames.faPlay} />, path: '/executions' },
+  { text: 'LLM Configs', icon: <FontAwesomeIcon icon={IconNames.faCog} />, path: '/llm-configs' },
 ];
 
 function Layout({ children }) {
@@ -163,7 +156,7 @@ function Layout({ children }) {
             }}
           >
             <ListItemIcon sx={{ color: '#64748b', minWidth: 40 }}>
-              <SettingsIcon />
+              <FontAwesomeIcon icon={IconNames.faCog} />
             </ListItemIcon>
             <ListItemText 
               primary="Settings"
@@ -210,7 +203,7 @@ function Layout({ children }) {
               color: '#0f172a',
             }}
           >
-            <MenuIcon />
+            <FontAwesomeIcon icon={IconNames.faBars} />
           </IconButton>
           
           {/* Search Bar */}
@@ -239,7 +232,7 @@ function Layout({ children }) {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#64748b', fontSize: 20 }} />
+                  <FontAwesomeIcon icon={IconNames.faSearch} style={{ color: '#64748b', fontSize: 20 }} />
                 </InputAdornment>
               ),
             }}
@@ -256,7 +249,7 @@ function Layout({ children }) {
                 },
               }}
             >
-              <ChatIcon />
+              <FontAwesomeIcon icon={IconNames.faComment} />
             </IconButton>
             <IconButton
               sx={{
@@ -268,7 +261,7 @@ function Layout({ children }) {
               }}
             >
               <Badge badgeContent={3} color="error">
-                <NotificationsIcon />
+                <FontAwesomeIcon icon={IconNames.faBell} />
               </Badge>
             </IconButton>
             <Avatar
@@ -282,7 +275,7 @@ function Layout({ children }) {
                 },
               }}
             >
-              <PersonIcon />
+              <FontAwesomeIcon icon={IconNames.faUser} />
             </Avatar>
           </Box>
         </Toolbar>

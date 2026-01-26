@@ -116,7 +116,10 @@ Central command center showing:
 - Severity-based risk summaries
 - Library-wise findings
 - Execution history & trends
-- Filters by model, API, environment, test type
+- Safety Score overview
+- Drift Score overview (v1.1)
+- Quick action buttons
+- Real-time execution status updates
 
 ### 7.2 LLM API Configuration (Postman-Style)
 
@@ -232,6 +235,78 @@ Exports supported:
 - Error message capture for failed executions
 - Auto-refresh in UI (polling every 3 seconds)
 - Execution lifecycle logging
+- Baseline management (v1.1)
+- Baseline indicators in execution list (v1.1)
+
+### 7.9 Drift Detection (v1.1)
+
+**Comprehensive behavior change detection across five drift types:**
+
+1. **Output Drift Detection:**
+   - Response length distribution analysis (Kolmogorov-Smirnov test)
+   - Token frequency comparison
+   - Response entropy calculation
+   - Detects structural and content changes in LLM responses
+
+2. **Safety Drift Detection:**
+   - Safety score delta calculation
+   - Severity count deltas (critical, high, medium, low, info)
+   - Critical/high finding frequency changes
+   - Tracks security posture changes over time
+
+3. **Distribution Drift Detection:**
+   - Statistical distribution shifts (KS test)
+   - Population Stability Index (PSI) on severity distributions
+   - Jensen-Shannon divergence on token frequencies
+   - Identifies pattern changes in response distributions
+
+4. **Embedding Drift Detection:**
+   - Semantic similarity analysis using sentence embeddings
+   - Centroid embedding comparison (cosine similarity)
+   - Pairwise similarity variance
+   - Detects semantic meaning changes not visible in surface metrics
+
+5. **Agent/Tool Drift Detection:**
+   - Tool frequency comparison (chi-square test)
+   - Tool sequence comparison (Jaccard similarity, n-gram analysis)
+   - New tool introduction detection
+   - Tool overuse threshold detection
+   - Loop detection (repeated tool sequences)
+   - Tracks agent behavior changes
+
+**Drift Detection Features:**
+- Automatic embedding generation after execution completion
+- Baseline management with tagging support
+- Unified drift score (0-100) with letter grades (A-F)
+- Configurable thresholds per drift type
+- Deterministic and explainable calculations
+- Async processing for non-blocking comparisons
+- Detailed drift findings with metrics and evidence
+
+### 7.10 Baseline Management (v1.1)
+
+**Baseline creation and management:**
+- Create baselines from completed executions
+- Tag baselines for easy identification (e.g., "golden-run", "v1.0")
+- Three baseline selection modes:
+  - Previous execution (automatic)
+  - Tagged baseline (by tag name)
+  - Explicit baseline (by execution ID)
+- Baseline indicators in UI
+- Baseline CRUD operations via API
+- Baseline deletion and management
+
+### 7.11 Embedding Generation (v1.1)
+
+**Automatic semantic embedding generation:**
+- Generates embeddings for all result responses
+- Uses sentence-transformers models (default: all-MiniLM-L6-v2)
+- Supports multiple embedding models
+- Batch processing for efficiency
+- Model caching for performance
+- Automatic generation after execution completion
+- Embeddings stored for drift comparison
+- Configurable embedding model at app level
 
 ## 8. Supported LLMs
 
@@ -246,6 +321,8 @@ PromptShield works with any LLM exposed via HTTP API, including:
 
 ## 9. User Workflow
 
+### Basic Validation Workflow (v1.0)
+
 1. Open PromptShield dashboard
 2. Configure LLM API (headers, URL, port)
 3. Select Python OSS validation libraries
@@ -253,6 +330,30 @@ PromptShield works with any LLM exposed via HTTP API, including:
 5. Execute validation
 6. Review findings
 7. Export/share reports
+
+### Drift Detection Workflow (v1.1)
+
+1. **Create Baseline:**
+   - Complete an execution
+   - Set it as baseline (with optional tag)
+   - Baseline stored for future comparisons
+
+2. **Run New Execution:**
+   - Execute same pipeline with same LLM config
+   - Wait for completion
+   - Embeddings auto-generated
+
+3. **Compare for Drift:**
+   - Open Results page for new execution
+   - Select baseline from dropdown
+   - Click "Compare with Baseline"
+   - Review drift score and findings
+
+4. **Analyze Results:**
+   - Check drift score (0-100, higher is better)
+   - Review drift grade (A-F)
+   - Examine drift findings by type
+   - Make informed decisions about model updates
 
 ## 10. Non-Functional Requirements
 
@@ -279,10 +380,19 @@ PromptShield works with any LLM exposed via HTTP API, including:
 
 ## 12. UI / UX Requirements
 
-- Light Wells Fargo–style color theme
-- Modern enterprise design
-- Clear severity visualization
-- Minimal cognitive load
+- **Theme**: Modern SaaS-grade light theme with sharp corners
+- **Design**: Enterprise-grade design with precise corners (no rounded elements)
+- **Layout**: 
+  - Top header with logo and navigation
+  - Left sidebar (280px) with user profile and full navigation
+  - Centered main content (max-width: 1400px)
+- **Visualization**: Clear severity and drift visualization
+- **User Experience**: 
+  - Minimal cognitive load
+  - Auto-refresh for real-time updates
+  - Loading indicators for async operations
+  - Comprehensive error messages
+  - Intuitive baseline and drift management
 
 ## 13. Success Metrics
 
@@ -305,7 +415,9 @@ promptshield/
 │   │   │       ├── pipelines.py        # Pipeline CRUD operations
 │   │   │       ├── executions.py       # Execution management
 │   │   │       ├── results.py          # Results retrieval and filtering
-│   │   │       └── reports.py          # Report generation endpoints
+│   │   │       ├── reports.py          # Report generation endpoints
+│   │   │       ├── baselines.py        # Baseline management (v1.1)
+│   │   │       └── drift.py            # Drift detection (v1.1)
 │   │   ├── core/
 │   │   │   └── config.py               # Application configuration
 │   │   ├── db/
@@ -315,9 +427,20 @@ promptshield/
 │   │       ├── execution_engine.py     # Pipeline orchestration
 │   │       ├── normalizer.py           # Result normalization
 │   │       ├── library_adapters.py     # Library plugin interface
-│   │       └── report_generator.py     # Report generation (JSON/PDF/HTML)
+│   │       ├── report_generator.py     # Report generation (JSON/PDF/HTML)
+│   │       ├── baseline_manager.py     # Baseline management (v1.1)
+│   │       ├── embedding_generator.py # Embedding generation (v1.1)
+│   │       ├── drift_engine.py         # Drift detection engine (v1.1)
+│   │       └── agent_trace_extractor.py # Agent trace extraction (v1.1)
 │   ├── main.py                         # FastAPI application entry point
-│   └── requirements.txt                 # Python dependencies
+│   ├── requirements.txt                 # Python dependencies
+│   ├── alembic/                        # Database migrations
+│   │   ├── env.py
+│   │   ├── script.py.mako
+│   │   └── versions/
+│   │       └── 001_add_drift_detection_tables.py
+│   ├── alembic.ini                     # Alembic configuration
+│   └── validate_v1.1.py               # Validation script (v1.1)
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -334,6 +457,11 @@ promptshield/
 │   └── public/
 │       └── index.html                  # HTML template
 ├── README.md                           # Quick start guide
+├── SETUP.md                            # Detailed setup guide
+├── QUICK_START.md                      # Quick start guide
+├── VALIDATION_GUIDE.md                 # Feature validation guide (v1.1)
+├── TEST_WORKFLOW.md                    # Test workflow guide (v1.1)
+├── FUNCTIONALITY_GUIDE.md              # Non-technical user guide
 ├── PromptShield.md                     # This documentation file
 └── .gitignore                          # Git ignore rules
 ```
@@ -353,11 +481,20 @@ promptshield/
    - `Pipeline`: Validation pipeline definitions
    - `Execution`: Execution records with status tracking
    - `Result`: Normalized validation results
+   - **v1.1 Models:**
+     - `Baseline`: Baseline execution references with tags
+     - `Embedding`: Embedding vectors for semantic drift detection
+     - `DriftResult`: Drift detection results with metrics
+     - `AgentTrace`: Agent execution traces for behavior drift
 
 3. **Execution Engine** (`app/services/execution_engine.py`)
    - Async pipeline orchestration
    - Parallel library execution
    - Status tracking and error handling
+   - **v1.1 Enhancements:**
+     - Automatic embedding generation after execution
+     - Agent trace extraction (if enabled)
+     - Background task management for post-execution processing
 
 4. **Library Adapters** (`app/services/library_adapters.py`)
    - Plugin-based architecture
@@ -381,6 +518,36 @@ promptshield/
    - HTML export (human-readable with styling)
    - PDF export (audit-ready)
 
+7. **Baseline Manager** (`app/services/baseline_manager.py`) - v1.1
+   - Create baselines from executions
+   - Retrieve baselines by ID, tag, or execution
+   - List and manage baselines
+   - Get previous execution for automatic baseline selection
+   - Delete baselines
+
+8. **Embedding Generator** (`app/services/embedding_generator.py`) - v1.1
+   - Generate embeddings for result responses
+   - Support multiple embedding models
+   - Batch processing for efficiency
+   - Model caching for performance
+   - Cosine similarity calculation
+   - Centroid computation for drift detection
+
+9. **Drift Engine** (`app/services/drift_engine.py`) - v1.1
+   - Compare executions for behavior drift
+   - Detect 5 types of drift (output, safety, distribution, embedding, agent_tool)
+   - Calculate unified drift score (0-100)
+   - Assign drift grades (A-F)
+   - Statistical analysis (KS test, PSI, chi-square, Jaccard)
+   - Deterministic and explainable calculations
+
+10. **Agent Trace Extractor** (`app/services/agent_trace_extractor.py`) - v1.1
+    - Extract structured traces from agent executions
+    - LangChain callback integration (optional)
+    - AutoGen hook integration (optional)
+    - Parse tool calls and LLM calls
+    - Store traces for behavior drift analysis
+
 #### Frontend (React)
 
 1. **Dashboard** (`pages/Dashboard.js`)
@@ -403,22 +570,48 @@ promptshield/
 4. **Executions** (`pages/Executions.js`)
    - Execution list with status
    - Start new executions
+   - Auto-refresh (polling every 3 seconds)
+   - Loading indicators for running executions
+   - Polling logic for new execution completion
+   - Error message display for failed executions
+   - **Baseline management (v1.1):**
+     - Baseline indicator badge on baseline executions
+     - "Set as Baseline" button (⭐ icon) for completed executions
+     - Baseline creation dialog with name and tag input
+     - Baseline column in executions table
    - Export reports
 
 5. **Results** (`pages/Results.js`)
    - Filterable results table
    - Severity-based visualization
    - **Safety Score card** with grade (A-F) and color coding
+   - **Drift Detection UI (v1.1):**
+     - "Drift Detected" badge when drift results exist
+     - Baseline selector dropdown
+     - "Compare with Baseline" button
+     - **Drift Score card** with grade (A-F) and color coding
+     - Drift results table with columns:
+       - Drift Type, Metric, Value, Threshold, Severity, Confidence
+     - Expandable details for each drift finding
+     - Filtering by drift type and severity
    - Evidence viewer
    - Export functionality (JSON, HTML, PDF)
    - Summary statistics (by severity, library, category)
+   - Drift summary statistics (v1.1)
 
 ### Database Schema
 
+**Core Tables (v1.0):**
 - **LLMConfig**: API endpoint configurations with headers, payloads, timeouts
 - **Pipeline**: Library selections, test categories, severity thresholds
 - **Execution**: Status tracking, timestamps, error messages
 - **Result**: Normalized findings with evidence, severity, confidence
+
+**Drift Detection Tables (v1.1):**
+- **Baseline**: Baseline execution references with tags and metadata
+- **Embedding**: Embedding vectors for result responses (JSON array of floats)
+- **DriftResult**: Drift detection results with metrics, values, and severity
+- **AgentTrace**: Agent execution traces for tool/behavior drift detection
 
 ### API Endpoints
 
@@ -444,13 +637,30 @@ promptshield/
 
 #### Results
 - `GET /api/v1/results/execution/{id}` - Get execution results (with filters: severity, library, test_category)
-- `GET /api/v1/results/execution/{id}/summary` - Get summary statistics (includes safety_score and safety_grade)
+- `GET /api/v1/results/execution/{id}/summary` - Get summary statistics (includes safety_score, safety_grade, drift_score, drift_grade)
 - `GET /api/v1/results/{id}` - Get specific result
 
 #### Reports
 - `GET /api/v1/reports/execution/{id}/json` - JSON report
 - `GET /api/v1/reports/execution/{id}/html` - HTML report
 - `GET /api/v1/reports/execution/{id}/pdf` - PDF report
+
+#### Baselines (v1.1)
+- `POST /api/v1/baselines` - Create baseline from execution
+- `GET /api/v1/baselines` - List all baselines (with optional filters: pipeline_id, llm_config_id)
+- `GET /api/v1/baselines/{id}` - Get baseline details
+- `DELETE /api/v1/baselines/{id}` - Delete baseline
+- `GET /api/v1/baselines/tag/{tag}` - Get baseline by tag
+
+#### Drift Detection (v1.1)
+- `POST /api/v1/drift/compare` - Compare execution with baseline (async processing)
+  - Request body: `{execution_id, baseline_execution_id?, baseline_tag?, baseline_mode?}`
+  - Returns: `{drift_results, drift_score, drift_grade, execution_id, baseline_execution_id}`
+- `GET /api/v1/drift/execution/{id}` - Get drift results for execution
+  - Query params: `baseline_execution_id?, drift_type?, severity?`
+  - Returns: List of drift results
+- `GET /api/v1/drift/execution/{id}/summary` - Get drift summary
+  - Returns: `{drift_score, drift_grade, total_drift_results, by_type, by_severity}`
 
 ### Color Theme (Modern SaaS-Grade Light Theme)
 
@@ -480,6 +690,15 @@ promptshield/
 - Uvicorn (ASGI server)
 - ReportLab (PDF generation)
 - Jinja2 (HTML templating)
+- **Drift Detection & ML (v1.1):**
+  - sentence-transformers 2.2.2 (embedding generation)
+  - scipy 1.11.4 (statistical tests)
+  - numpy 1.24.3 (numerical operations)
+  - scikit-learn 1.3.2 (additional metrics)
+  - evidently 0.4.15 (distribution drift)
+- **Agent Frameworks (v1.1, optional):**
+  - langchain 0.1.0 (agent framework hooks)
+  - pyautogen 0.8.5 (agent framework hooks)
 
 **Frontend:**
 - React 18.2.0
@@ -647,12 +866,256 @@ The platform successfully:
 - ✅ Includes comprehensive error handling and logging
 - ✅ Supports 4 libraries: Garak, PyRIT, LangTest, Promptfoo
 - ✅ Implements asynchronous execution with background tasks
+- ✅ **v1.1: Drift Detection** - Comprehensive behavior change detection
+- ✅ **v1.1: Baseline Management** - Tagged baseline system for comparisons
+- ✅ **v1.1: Embedding Generation** - Automatic semantic embedding creation
+- ✅ **v1.1: Five Drift Types** - Output, Safety, Distribution, Embedding, Agent/Tool
+- ✅ **v1.1: Unified Drift Score** - 0-100 scale with A-F grading
+- ✅ **v1.1: Agent Trace Support** - Optional LangChain/AutoGen integration
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Last Updated**: December 2024  
 **License**: Open Source (TBD)
+
+## 17. PromptShield v1.1 - Drift Detection & Behavior Assurance
+
+### 17.1 Overview
+
+PromptShield v1.1 extends the platform with comprehensive drift detection capabilities, enabling enterprises to detect behavior changes in LLM systems and agents over time. This feature addresses the critical need to answer: *"Is our LLM or agent still behaving the way we approved?"*
+
+**Key Capabilities:**
+- **Batch-based drift detection** - Compare executions to detect behavior changes
+- **Semantic embedding drift** - Detect meaning changes using embeddings
+- **Agent/tool behavior drift** - Track agent behavior changes
+- **Baseline management** - Tagged baseline system for golden runs
+- **Unified scoring** - Single drift score (0-100) with letter grades
+- **Deterministic results** - All calculations are explainable and reproducible
+
+### 17.2 Drift Types Supported
+
+| Drift Type | Description | Detection Method |
+|------------|-------------|------------------|
+| **Output Drift** | Structural/content changes in responses | Response length distribution (KS test), token frequency, response entropy |
+| **Safety Drift** | Safety score and severity changes | Safety score delta, severity count deltas, critical/high finding frequency |
+| **Distribution Drift** | Statistical distribution shifts | KS test, PSI (Population Stability Index), JS divergence |
+| **Embedding Drift** | Semantic meaning changes | Cosine similarity between centroid embeddings, pairwise similarity variance |
+| **Agent/Tool Drift** | Tool usage and behavior changes | Tool frequency comparison (chi-square), tool sequence comparison (Jaccard), new tool detection |
+
+### 17.3 Baseline Management
+
+Baselines are explicit, user-controlled reference points for comparison:
+
+- **Previous Execution**: Automatically use the most recent completed execution for the same pipeline + LLM config
+- **Tagged Baseline**: Create baselines with tags (e.g., "golden-run", "v1.0") for easy identification
+- **Explicit Baseline**: Manually select any completed execution as a baseline
+
+**Baseline Features:**
+- Create baselines from completed executions
+- Tag baselines for easy retrieval
+- List and manage all baselines
+- Delete baselines when no longer needed
+- Baseline indicators in UI
+
+### 17.4 Drift Detection Workflow
+
+1. **Create Baseline:**
+   - Complete an execution
+   - Mark it as a baseline (with optional tag)
+   - Baseline is stored for future comparisons
+
+2. **Run New Execution:**
+   - Execute the same pipeline with the same LLM config
+   - Execution completes and results are stored
+
+3. **Compare with Baseline:**
+   - Select baseline (previous execution, tagged baseline, or explicit)
+   - Trigger drift comparison
+   - System calculates all drift types
+
+4. **Review Drift Results:**
+   - View drift score (0-100, higher is better)
+   - Review drift grade (A-F)
+   - Examine detailed drift findings by type
+   - Filter by severity and drift type
+
+### 17.5 Drift Score & Grading
+
+**Unified Drift Score Calculation:**
+- Starts at 100 (perfect stability)
+- Deducts points based on drift severity:
+  - Critical: -20 points
+  - High: -10 points
+  - Medium: -5 points
+  - Low: -2 points
+- Final score ranges from 0-100
+
+**Drift Grade Mapping:**
+- **A (90-100)**: Stable - No significant drift detected
+- **B (75-89)**: Minor Drift - Some changes detected, acceptable
+- **C (60-74)**: Risk - Moderate drift, review recommended
+- **D (45-59)**: Significant Drift - Major changes detected
+- **F (<45)**: Unstable - Critical drift, immediate action required
+
+### 17.6 API Endpoints (v1.1)
+
+#### Baseline Endpoints
+
+- `POST /api/v1/baselines` - Create baseline from execution
+- `GET /api/v1/baselines` - List all baselines (with optional filters)
+- `GET /api/v1/baselines/{id}` - Get baseline details
+- `DELETE /api/v1/baselines/{id}` - Delete baseline
+- `GET /api/v1/baselines/tag/{tag}` - Get baseline by tag
+
+#### Drift Detection Endpoints
+
+- `POST /api/v1/drift/compare` - Compare execution with baseline (async)
+- `GET /api/v1/drift/execution/{id}` - Get drift results for execution
+- `GET /api/v1/drift/execution/{id}/summary` - Get drift summary (score, grade, aggregations)
+
+### 17.7 Database Schema (v1.1 Additions)
+
+**New Tables:**
+
+1. **baselines** - Stores baseline execution references
+2. **embeddings** - Stores embedding vectors for result responses
+3. **drift_results** - Stores drift detection results
+4. **agent_traces** - Stores agent execution traces (optional)
+
+### 17.8 Configuration
+
+**New Settings in `app/core/config.py`:**
+
+```python
+DRIFT_THRESHOLDS = {
+    "output": 0.2,
+    "safety": 0.15,
+    "distribution": 0.2,
+    "embedding": 0.3,
+    "agent_tool": 0.25,
+}
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+ENABLE_AGENT_TRACES = False
+DRIFT_COMPARISON_TIMEOUT = 600  # seconds
+```
+
+### 17.9 Dependencies (v1.1)
+
+**New Python Packages:**
+- `sentence-transformers==2.2.2` - Embedding generation
+- `scipy==1.11.4` - Statistical tests
+- `numpy==1.24.3` - Numerical operations
+- `scikit-learn==1.3.2` - Additional metrics
+- `evidently==0.4.15` - Distribution drift (optional)
+- `langchain==0.1.0` - Agent framework hooks (optional)
+- `autogen==0.2.0` - Agent framework hooks (optional)
+
+### 17.10 Usage Examples
+
+#### Example 1: Create Baseline and Compare
+
+```python
+# 1. Create baseline from completed execution
+POST /api/v1/baselines
+{
+  "execution_id": 123,
+  "name": "Production Baseline v1.0",
+  "tag": "golden-run"
+}
+
+# 2. Run new execution (execution_id: 124)
+
+# 3. Compare with baseline
+POST /api/v1/drift/compare
+{
+  "execution_id": 124,
+  "baseline_tag": "golden-run"
+}
+
+# 4. Get drift summary
+GET /api/v1/drift/execution/124/summary
+```
+
+#### Example 2: Compare with Previous Execution
+
+```python
+# Automatically compare with previous execution
+POST /api/v1/drift/compare
+{
+  "execution_id": 125,
+  "baseline_mode": "previous"
+}
+```
+
+### 17.11 UI Enhancements (v1.1)
+
+**Executions Page:**
+- Baseline indicator badge on baseline executions
+- "Set as Baseline" button for completed executions
+- Baseline creation dialog with name and tag
+
+**Results Page:**
+- "Drift Detected" badge when drift results exist
+- Baseline selector dropdown
+- "Compare with Baseline" button
+- Drift Score card (similar to Safety Score)
+- Drift results table with filtering
+- Color-coded drift grades
+
+### 17.12 Technical Implementation
+
+**Architecture:**
+- Drift detection runs asynchronously via background tasks
+- Embeddings are generated automatically after execution completion
+- Agent traces are extracted if agent frameworks are enabled
+- All drift calculations are deterministic and explainable
+
+**Performance:**
+- Batch processing for embedding generation
+- Configurable thresholds for drift detection
+- Efficient database queries with proper indexing
+- Async processing for non-blocking comparisons
+
+### 17.13 Migration Guide
+
+To upgrade from v1.0 to v1.1:
+
+1. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Run Database Migration:**
+   ```bash
+   alembic upgrade head
+   ```
+
+3. **Configure Settings:**
+   - Update `app/core/config.py` with drift detection settings
+   - Adjust thresholds as needed
+
+4. **Restart Services:**
+   - Restart backend server
+   - Frontend will automatically pick up new features
+
+### 17.14 Limitations & Future Enhancements
+
+**Current Limitations:**
+- Real-time drift detection not supported (batch-only)
+- Agent framework hooks require manual integration (optional feature)
+- Embedding generation adds processing time (runs asynchronously)
+- Embedding model is app-level config (not per-execution)
+
+**Future Enhancements:**
+- Scheduled drift comparisons
+- Drift trend visualization over time
+- Automated alerting for significant drift
+- Enhanced agent framework integration
+- Custom drift metric definitions
+- Per-pipeline embedding model selection
+- Optional embedding generation toggle
+- Drift comparison history and trends
 
 ## 16. Recent Updates & Improvements
 
@@ -700,3 +1163,16 @@ The platform successfully:
    - ✅ API integration test (`test_api.py`)
    - ✅ Simple adapter test (`test_simple.py`)
    - ✅ Full flow verification (config → pipeline → execution → results)
+   - ✅ Validation script (`validate_v1.1.py`)
+   - ✅ Comprehensive validation guides
+
+8. **Drift Detection Features (v1.1)**
+   - ✅ Baseline management system
+   - ✅ Automatic embedding generation
+   - ✅ Five drift types detection
+   - ✅ Unified drift scoring
+   - ✅ Agent trace extraction (optional)
+   - ✅ Complete UI integration
+   - ✅ Full API support
+   - ✅ Database migrations
+   - ✅ Comprehensive documentation

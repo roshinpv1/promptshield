@@ -37,6 +37,19 @@ class Settings(BaseSettings):
     RESULTS_DIR: str = "./results"
     REPORTS_DIR: str = "./reports"
     
+    # Drift Detection
+    DRIFT_THRESHOLDS: dict = {
+        "output": 0.2,
+        "safety": 0.15,
+        "distribution": 0.2,
+        "embedding": 0.3,
+        "agent_tool": 0.25,
+    }
+    EMBEDDING_SERVICE_URL: str = "http://127.0.0.1:1234/v1/embeddings"  # Embedding service endpoint URL
+    EMBEDDING_MODEL_NAME: str = "text-embedding-nomic-embed-text-v1.5"  # Model name identifier (for tracking purposes)
+    ENABLE_AGENT_TRACES: bool = True  # Set to True to enable agent trace extraction
+    DRIFT_COMPARISON_TIMEOUT: int = 600  # seconds
+    
     class Config:
         env_file = ".env"
         case_sensitive = True

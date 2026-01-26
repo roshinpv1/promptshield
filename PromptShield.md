@@ -80,11 +80,12 @@ All integrations must:
 - **Framework**: React 18.2.0
 - **Type**: Modern SPA (Single Page Application)
 - **UI Library**: Material-UI (MUI) 5.15.0
-- **Theme**: Modern SaaS-grade light theme with sharp corners
-  - Clean whites, professional grays, accent blues
-  - Enterprise-grade design with sharp, precise corners (no rounded elements)
-  - Consistent spacing and alignment
-  - Modern typography and visual hierarchy
+- **Theme**: Google Material Design 3 (Material You)
+  - **Style**: Modern, approachable, and expressive
+  - **Components**: Pill-shaped buttons, rounded cards (16px), surface tints
+  - **Color System**: Primary Red (#dc2626) with Material 3 tonal palettes
+  - **Motion**: Smooth, fluid animations (250ms cubic-bezier)
+  - **State Layers**: Interactive opacity overlays for hover/focus
 - **Layout Structure**:
   - Top header bar with logo, navigation links, and user actions
   - Left sidebar (280px) with user profile section and full navigation menu
@@ -220,9 +221,14 @@ All library outputs are converted into a common schema:
 ### 7.7 Reports & Evidence
 
 Exports supported:
-- **JSON** (machine-readable)
-- **PDF** (audit & governance)
-- **HTML** (human-readable)
+- **JSON** (machine-readable): Includes full result set, granular safety scores by library/category, and metadata.
+- **PDF** (audit & governance): Material 3 styled document with summary tables, score breakdowns, and detailed findings.
+- **HTML** (human-readable): Interactive, styled report following the platform's Material 3 design system with responsive grids and score cards.
+
+**Granular Scoring (v1.2):**
+- **Safety Score**: Overall 0-100 score and letter grade (A-F)
+- **Library Breakdown**: Individual safety scores/grades per library (e.g., Garak: 95/A, PyRIT: 78/C)
+- **Category Breakdown**: Individual safety scores/grades per risk category (e.g., Injection: 88/B)
 
 ### 7.8 Execution Management
 
@@ -380,15 +386,16 @@ PromptShield works with any LLM exposed via HTTP API, including:
 
 ## 12. UI / UX Requirements
 
-- **Theme**: Modern SaaS-grade light theme with sharp corners
-- **Design**: Enterprise-grade design with precise corners (no rounded elements)
+- **Theme**: Google Material Design 3 (Material You)
+- **Design**: Rounded corners (12-28px), pill-shaped elements, surface tints
 - **Layout**: 
-  - Top header with logo and navigation
-  - Left sidebar (280px) with user profile and full navigation
-  - Centered main content (max-width: 1400px)
-- **Visualization**: Clear severity and drift visualization
+  - Top header with floating app bar logic
+  - Left sidebar navigation rail with state layers
+  - Centered main content with responsive grids
+- **Visualization**: Clear severity badges (pill-shaped) and modern charts
 - **User Experience**: 
-  - Minimal cognitive load
+  - Delightful micro-interactions (scale, lift)
+  - Fluid transitions
   - Auto-refresh for real-time updates
   - Loading indicators for async operations
   - Comprehensive error messages
@@ -662,12 +669,18 @@ promptshield/
 - `GET /api/v1/drift/execution/{id}/summary` - Get drift summary
   - Returns: `{drift_score, drift_grade, total_drift_results, by_type, by_severity}`
 
-### Color Theme (Modern SaaS-Grade Light Theme)
+### Color Theme (Google Material Design 3)
 
-- **Primary Colors**: Professional blues and grays
-- **Background**: Clean whites and light grays
-- **Accent Colors**: Professional palette
-- **Component Styling**: Sharp corners (borderRadius: 0) for all elements
+- **Primary Color**: `#dc2626` (Red) - Brand identity
+- **Surface Colors**: 
+  - Background: `#fef7ff` (Subtle tint)
+  - Cards: `#ffffff` with surface tint overlay
+  - Navigation: `#fef7ff`
+- **Shapes**:
+  - Buttons: 20px radius (Pill)
+  - Cards: 16px radius
+  - Dialogs: 28px radius
+  - Badges: 100px radius
 - **Severity Colors**:
   - Critical: `#D32F2F` (Red)
   - High: `#F57C00` (Orange)
@@ -675,11 +688,11 @@ promptshield/
   - Low: `#388E3C` (Green)
   - Info: `#1976D2` (Blue)
 - **Safety Score Colors**:
-  - Grade A (90-100): Green border
-  - Grade B (80-89): Blue border
-  - Grade C (70-79): Yellow border
-  - Grade D (60-69): Orange border
-  - Grade F (<60): Red border
+  - Grade A (90-100): Green tint
+  - Grade B (80-89): Blue tint
+  - Grade C (70-79): Yellow tint
+  - Grade D (60-69): Orange tint
+  - Grade F (<60): Red tint
 
 ### Technology Stack
 

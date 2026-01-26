@@ -39,10 +39,10 @@ function Layout({ children }) {
   };
 
   const drawer = (
-    <Box sx={{ 
-      height: '100%', 
-      bgcolor: '#ffffff', 
-      display: 'flex', 
+    <Box sx={{
+      height: '100%',
+      bgcolor: '#ffffff',
+      display: 'flex',
       flexDirection: 'column',
       borderRight: '1px solid #e2e8f0',
       overflow: 'auto',
@@ -52,24 +52,25 @@ function Layout({ children }) {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <Box
             sx={{
-              width: 40,
-              height: 40,
-              background: '#dc2626',
-              borderRadius: 0,
+              width: 48,
+              height: 48,
+              background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+              borderRadius: 3, // Material 3 large corner (16px)
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#FFFFFF',
               fontWeight: 700,
-              fontSize: '1.125rem',
+              fontSize: '1.25rem',
+              boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)',
             }}
           >
             PS
           </Box>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              fontWeight: 700, 
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
               color: '#0f172a',
               fontSize: '1.125rem',
             }}
@@ -90,17 +91,19 @@ function Layout({ children }) {
                 setMobileOpen(false);
               }}
               sx={{
-                borderRadius: 0,
-                minHeight: 48,
-                px: 2,
+                borderRadius: 3, // Material 3 large corner (16px)
+                minHeight: 52,
+                px: 2.5,
                 py: 1.5,
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                mb: 0.5,
+                transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)',
                 '&.Mui-selected': {
-                  backgroundColor: '#fef2f2',
+                  backgroundColor: 'linear-gradient(rgba(220, 38, 38, 0.12), rgba(220, 38, 38, 0.12)), #ffffff',
                   color: '#dc2626',
-                  borderLeft: '3px solid #dc2626',
+                  borderLeft: '4px solid #dc2626',
+                  paddingLeft: '16px',
                   '&:hover': {
-                    backgroundColor: '#fee2e2',
+                    backgroundColor: 'linear-gradient(rgba(220, 38, 38, 0.16), rgba(220, 38, 38, 0.16)), #ffffff',
                   },
                   '& .MuiListItemIcon-root': {
                     color: '#dc2626',
@@ -110,22 +113,23 @@ function Layout({ children }) {
                   },
                 },
                 '&:hover': {
-                  backgroundColor: '#f8fafc',
+                  backgroundColor: 'rgba(220, 38, 38, 0.04)',
+                  transform: 'translateX(4px)',
                   '& .MuiListItemIcon-root': {
                     color: '#dc2626',
                   },
                 },
               }}
             >
-              <ListItemIcon 
-                sx={{ 
+              <ListItemIcon
+                sx={{
                   color: location.pathname === item.path ? '#dc2626' : '#64748b',
                   minWidth: 40,
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={item.text}
                 primaryTypographyProps={{
                   fontSize: '0.9375rem',
@@ -137,18 +141,19 @@ function Layout({ children }) {
           </ListItem>
         ))}
       </List>
-      
+
       {/* Bottom Section - Settings */}
       <Box sx={{ mt: 'auto', px: 2, pb: 2 }}>
         <ListItem disablePadding>
           <ListItemButton
             sx={{
-              borderRadius: 0,
-              minHeight: 48,
-              px: 2,
+              borderRadius: 3, // Material 3 large corner
+              minHeight: 52,
+              px: 2.5,
               py: 1.5,
               '&:hover': {
-                backgroundColor: '#f8fafc',
+                backgroundColor: 'rgba(220, 38, 38, 0.04)',
+                transform: 'translateX(4px)',
                 '& .MuiListItemIcon-root': {
                   color: '#dc2626',
                 },
@@ -158,7 +163,7 @@ function Layout({ children }) {
             <ListItemIcon sx={{ color: '#64748b', minWidth: 40 }}>
               <FontAwesomeIcon icon={IconNames.faCog} />
             </ListItemIcon>
-            <ListItemText 
+            <ListItemText
               primary="Settings"
               primaryTypographyProps={{
                 fontSize: '0.9375rem',
@@ -181,13 +186,16 @@ function Layout({ children }) {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
           backgroundColor: '#ffffff',
-          borderBottom: '1px solid #e2e8f0',
+          borderBottom: 'none',
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
           color: '#0f172a',
           zIndex: (theme) => theme.zIndex.drawer + 1,
+          backdropFilter: 'blur(8px)',
+          background: 'linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95))',
         }}
       >
-        <Toolbar sx={{ 
-          minHeight: '72px !important', 
+        <Toolbar sx={{
+          minHeight: '72px !important',
           px: { xs: 2, sm: 3 },
           justifyContent: 'space-between',
           gap: 2,
@@ -197,15 +205,15 @@ function Layout({ children }) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ 
-              mr: 1, 
+            sx={{
+              mr: 1,
               display: { sm: 'none' },
               color: '#0f172a',
             }}
           >
             <FontAwesomeIcon icon={IconNames.faBars} />
           </IconButton>
-          
+
           {/* Search Bar */}
           <TextField
             placeholder="Search anything"
@@ -213,19 +221,29 @@ function Layout({ children }) {
             size="small"
             sx={{
               flexGrow: 1,
-              maxWidth: { xs: '100%', md: '400px' },
+              maxWidth: { xs: '100%', md: '500px' },
               '& .MuiOutlinedInput-root': {
-                borderRadius: 0,
+                borderRadius: '28px', // Material 3 extra-large (pill-shaped search)
                 backgroundColor: '#f8fafc',
+                height: '48px',
+                transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)',
                 '& fieldset': {
-                  borderColor: '#e2e8f0',
+                  borderColor: 'transparent',
+                },
+                '&:hover': {
+                  backgroundColor: '#f1f5f9',
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                 },
                 '&:hover fieldset': {
-                  borderColor: '#cbd5e1',
+                  borderColor: 'transparent',
+                },
+                '&.Mui-focused': {
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
                 },
                 '&.Mui-focused fieldset': {
                   borderColor: '#dc2626',
-                  borderWidth: '1px',
+                  borderWidth: '2px',
                 },
               },
             }}
@@ -237,15 +255,18 @@ function Layout({ children }) {
               ),
             }}
           />
-          
+
           {/* Right Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <IconButton
               sx={{
                 color: '#64748b',
+                borderRadius: 2,
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
                   color: '#dc2626',
-                  backgroundColor: '#fef2f2',
+                  backgroundColor: 'rgba(220, 38, 38, 0.08)',
+                  transform: 'scale(1.1)',
                 },
               }}
             >
@@ -254,9 +275,12 @@ function Layout({ children }) {
             <IconButton
               sx={{
                 color: '#64748b',
+                borderRadius: 2,
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
                   color: '#dc2626',
-                  backgroundColor: '#fef2f2',
+                  backgroundColor: 'rgba(220, 38, 38, 0.08)',
+                  transform: 'scale(1.1)',
                 },
               }}
             >
@@ -268,10 +292,12 @@ function Layout({ children }) {
               sx={{
                 width: 40,
                 height: 40,
-                bgcolor: '#dc2626',
+                bgcolor: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
                 cursor: 'pointer',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
-                  opacity: 0.9,
+                  transform: 'scale(1.1)',
+                  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
                 },
               }}
             >
@@ -326,7 +352,7 @@ function Layout({ children }) {
           p: { xs: 3, sm: 4, md: 5 },
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           mt: '72px',
-          bgcolor: '#f8fafc',
+          bgcolor: '#fef7ff', // Material 3 surface color
           minHeight: 'calc(100vh - 72px)',
           overflow: 'auto',
         }}

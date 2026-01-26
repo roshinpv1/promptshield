@@ -272,7 +272,7 @@ function Executions() {
 
       <Card sx={{ 
         backgroundColor: '#ffffff',
-        borderRadius: 0,
+        borderRadius: 2,
         boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         border: '1px solid #e2e8f0',
       }}>
@@ -345,7 +345,7 @@ function Executions() {
                             execution.status === 'completed' ? '#059669' :
                             execution.status === 'running' ? '#d97706' :
                             execution.status === 'failed' ? '#dc2626' : '#6366f1',
-                          borderRadius: 0,
+                          borderRadius: 2,
                           textTransform: 'capitalize',
                         }}
                       />
@@ -436,7 +436,7 @@ function Executions() {
         onClose={() => setOpen(false)}
         PaperProps={{
           sx: {
-            borderRadius: 0,
+            borderRadius: 2,
             minWidth: '480px',
           }
         }}
@@ -494,7 +494,7 @@ function Executions() {
         onClose={() => setBaselineDialogOpen(false)}
         PaperProps={{
           sx: {
-            borderRadius: 0,
+            borderRadius: 2,
             minWidth: '480px',
           }
         }}

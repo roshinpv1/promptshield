@@ -158,10 +158,10 @@ function Dashboard() {
   return (
     <Box sx={{ width: '100%' }}>
       {/* Summary Section - Budget Planner Style */}
-      <Card sx={{ 
-        mb: 3, 
+      <Card sx={{
+        mb: 3,
         backgroundColor: '#ffffff',
-        borderRadius: 0,
+        borderRadius: 2,
         boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         border: '1px solid #e2e8f0',
       }}>
@@ -216,8 +216,8 @@ function Dashboard() {
                   Success Rate
                 </Typography>
                 <Typography variant="h4" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '2rem', mb: 2 }}>
-                  {stats.totalExecutions > 0 
-                    ? Math.round((stats.completedExecutions / stats.totalExecutions) * 100) 
+                  {stats.totalExecutions > 0
+                    ? Math.round((stats.completedExecutions / stats.totalExecutions) * 100)
                     : 0}%
                 </Typography>
                 <LinearProgress
@@ -225,10 +225,10 @@ function Dashboard() {
                   value={stats.totalExecutions > 0 ? (stats.completedExecutions / stats.totalExecutions) * 100 : 0}
                   sx={{
                     height: 8,
-                    borderRadius: 0,
+                    borderRadius: 2,
                     backgroundColor: '#f1f5f9',
                     '& .MuiLinearProgress-bar': {
-                      borderRadius: 0,
+                      borderRadius: 2,
                       backgroundColor: '#10b981',
                     },
                   }}
@@ -240,10 +240,10 @@ function Dashboard() {
       </Card>
 
       {/* Categories with Biggest Results - Budget Planner Style */}
-      <Card sx={{ 
-        mb: 3, 
+      <Card sx={{
+        mb: 3,
         backgroundColor: '#ffffff',
-        borderRadius: 0,
+        borderRadius: 2,
         boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         border: '1px solid #e2e8f0',
       }}>
@@ -272,14 +272,14 @@ function Dashboard() {
                 onClick={() => navigate('/executions')}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                  <Box sx={{ 
-                    width: 32, 
-                    height: 32, 
-                    display: 'flex', 
-                    alignItems: 'center', 
+                  <Box sx={{
+                    width: 32,
+                    height: 32,
+                    display: 'flex',
+                    alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: `${category.color}15`,
-                    borderRadius: 0,
+                    borderRadius: 2,
                   }}>
                     {category.icon}
                   </Box>
@@ -289,7 +289,7 @@ function Dashboard() {
                     ) : (
                       <FontAwesomeIcon icon={IconNames.faArrowTrendDown} style={{ fontSize: 16, color: '#ef4444' }} />
                     )}
-                    <Typography variant="caption" sx={{ 
+                    <Typography variant="caption" sx={{
                       color: category.changeType === 'up' ? '#10b981' : '#ef4444',
                       fontSize: '0.75rem',
                       fontWeight: 600,
@@ -313,9 +313,9 @@ function Dashboard() {
       <Grid container spacing={3}>
         {/* Results by Severity - Table Style */}
         <Grid item xs={12} md={8}>
-          <Card sx={{ 
+          <Card sx={{
             backgroundColor: '#ffffff',
-            borderRadius: 0,
+            borderRadius: 2,
             boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
             border: '1px solid #e2e8f0',
             height: '100%',
@@ -347,16 +347,16 @@ function Dashboard() {
                     </TableHead>
                     <TableBody>
                       {severityData.map((row, index) => {
-                        const percentage = stats.totalResults > 0 
-                          ? Math.round((row.value / stats.totalResults) * 100) 
+                        const percentage = stats.totalResults > 0
+                          ? Math.round((row.value / stats.totalResults) * 100)
                           : 0;
                         return (
                           <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#f8fafc' } }}>
                             <TableCell>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <Box sx={{ 
-                                  width: 8, 
-                                  height: 8, 
+                                <Box sx={{
+                                  width: 8,
+                                  height: 8,
                                   borderRadius: '50%',
                                   backgroundColor: COLORS[index % COLORS.length],
                                 }} />
@@ -385,7 +385,7 @@ function Dashboard() {
                                   fontWeight: 500,
                                   backgroundColor: percentage > 10 ? '#fee2e2' : percentage > 5 ? '#fef3c7' : '#d1fae5',
                                   color: percentage > 10 ? '#dc2626' : percentage > 5 ? '#d97706' : '#059669',
-                                  borderRadius: 0,
+                                  borderRadius: 2,
                                 }}
                               />
                             </TableCell>
@@ -408,9 +408,9 @@ function Dashboard() {
 
         {/* Chart Section */}
         <Grid item xs={12} md={4}>
-          <Card sx={{ 
+          <Card sx={{
             backgroundColor: '#ffffff',
-            borderRadius: 0,
+            borderRadius: 2,
             boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
             border: '1px solid #e2e8f0',
             height: '100%',
@@ -462,9 +462,9 @@ function Dashboard() {
 
         {/* Recent Executions - Transactions Style */}
         <Grid item xs={12}>
-          <Card sx={{ 
+          <Card sx={{
             backgroundColor: '#ffffff',
-            borderRadius: 0,
+            borderRadius: 2,
             boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
             border: '1px solid #e2e8f0',
           }}>
@@ -478,7 +478,7 @@ function Dashboard() {
                   onClick={() => navigate('/executions')}
                   sx={{
                     cursor: 'pointer',
-                    borderRadius: 0,
+                    borderRadius: 2,
                     fontSize: '0.8125rem',
                     height: 28,
                     backgroundColor: '#f8fafc',
@@ -532,22 +532,22 @@ function Dashboard() {
                                 height: 24,
                                 fontSize: '0.75rem',
                                 fontWeight: 500,
-                                backgroundColor: 
+                                backgroundColor:
                                   execution.status === 'completed' ? '#d1fae5' :
-                                  execution.status === 'running' ? '#fef3c7' :
-                                  execution.status === 'failed' ? '#fee2e2' : '#e0e7ff',
-                                color: 
+                                    execution.status === 'running' ? '#fef3c7' :
+                                      execution.status === 'failed' ? '#fee2e2' : '#e0e7ff',
+                                color:
                                   execution.status === 'completed' ? '#059669' :
-                                  execution.status === 'running' ? '#d97706' :
-                                  execution.status === 'failed' ? '#dc2626' : '#6366f1',
-                                borderRadius: 0,
+                                    execution.status === 'running' ? '#d97706' :
+                                      execution.status === 'failed' ? '#dc2626' : '#6366f1',
+                                borderRadius: 2,
                                 textTransform: 'capitalize',
                               }}
                             />
                           </TableCell>
                           <TableCell>
                             <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.875rem' }}>
-                              {execution.started_at 
+                              {execution.started_at
                                 ? new Date(execution.started_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                                 : 'N/A'}
                             </Typography>
@@ -561,7 +561,7 @@ function Dashboard() {
                                 cursor: 'pointer',
                                 height: 24,
                                 fontSize: '0.75rem',
-                                borderRadius: 0,
+                                borderRadius: 2,
                                 backgroundColor: '#f8fafc',
                                 '&:hover': {
                                   backgroundColor: '#fef2f2',

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.db.models import DriftResult, Result, Execution, AgentTrace
 from app.core.config import settings
-from app.api.endpoints.results import get_execution_summary
+from app.api.endpoints.results import calculate_execution_summary
 from app.services.embedding_generator import EmbeddingGenerator
 from app.services.agent_trace_extractor import AgentTraceExtractor
 import logging
@@ -210,8 +210,8 @@ class DriftEngine:
             # Get summaries for both executions
             db = SessionLocal()
             try:
-                current_summary = get_execution_summary(current_execution_id, db)
-                baseline_summary = get_execution_summary(baseline_execution_id, db)
+                current_summary = calculate_execution_summary(current_execution_id, db)
+                baseline_summary = calculate_execution_summary(baseline_execution_id, db)
             finally:
                 db.close()
             
@@ -562,7 +562,7 @@ class DriftEngine:
             "critical": 20.0,
             "high": 10.0,
             "medium": 5.0,
-            "low": 2.0,
+            "low": 0.0,
         }
         
         for result in drift_results:

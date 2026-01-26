@@ -146,7 +146,7 @@ function LLMConfigs() {
 
       <Card sx={{ 
         backgroundColor: '#ffffff',
-        borderRadius: 0,
+        borderRadius: 2,
         boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         border: '1px solid #e2e8f0',
       }}>
@@ -249,7 +249,7 @@ function LLMConfigs() {
         fullWidth
         PaperProps={{
           sx: {
-            borderRadius: 0,
+            borderRadius: 2,
             maxHeight: '90vh',
           }
         }}

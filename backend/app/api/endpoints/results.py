@@ -165,11 +165,19 @@ def _calculate_sub_scores_by_category(results: List[Result]) -> Tuple[Dict[str, 
     return scores, grades
 
 
-@router.get("/execution/{execution_id}/summary", response_model=ResultSummary)
-async def get_execution_summary(execution_id: int, db: Session = Depends(get_db)):
-    """Get summary statistics for an execution with granular sub-scores"""
+def calculate_execution_summary(execution_id: int, db: Session) -> ResultSummary:
+    """
+    Calculate summary statistics for an execution (Synchronous)
+    """
     execution = db.query(Execution).filter(Execution.id == execution_id).first()
     if not execution:
+        # Return empty summary or raise? The caller handles it usually.
+        # For compatibility with endpoint, we might raise HTTP exception here 
+        # but better to let endpoint handle HTTP specifics.
+        # However, since we are moving logic, let's keep raising for now or return None.
+        # If this function is designated to be used by API, raising HTTPException is okay-ish 
+        # but better to avoid HTTP deps in service logic. 
+        # For now, keeping as is to minimize diff, but beware of HTTP imports in services.
         raise HTTPException(status_code=404, detail="Execution not found")
     
     results = db.query(Result).filter(Result.execution_id == execution_id).all()
@@ -224,6 +232,12 @@ async def get_execution_summary(execution_id: int, db: Session = Depends(get_db)
         safety_grades_by_library=safety_grades_by_library,
         safety_grades_by_category=safety_grades_by_category
     )
+
+
+@router.get("/execution/{execution_id}/summary", response_model=ResultSummary)
+async def get_execution_summary(execution_id: int, db: Session = Depends(get_db)):
+    """Get summary statistics for an execution with granular sub-scores"""
+    return calculate_execution_summary(execution_id, db)
 
 
 @router.get("/{result_id}", response_model=ResultResponse)

@@ -1,87 +1,122 @@
-/* SaaS-Grade Modern Light Theme */
+/* Google Material Design 3 Theme */
 :root {
-  /* Base Colors - Clean Light Theme */
-  --background: #f8fafc;
-  --surface: #ffffff;
-  --surface-elevated: #ffffff;
-  --foreground: #0f172a;
-  --foreground-muted: #64748b;
-  
-  /* Primary Brand Colors - Modern Red */
-  --primary: #dc2626;
-  --primary-hover: #b91c1c;
-  --primary-active: #991b1b;
-  --primary-foreground: #ffffff;
-  --primary-light: #fef2f2;
-  --primary-gradient: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  
-  /* Secondary Colors */
-  --secondary: #f1f5f9;
-  --secondary-hover: #e2e8f0;
-  --secondary-active: #cbd5e1;
-  --secondary-foreground: #1e293b;
-  
-  /* Accent Colors */
-  --accent: #3b82f6;
-  --accent-light: #dbeafe;
-  
-  /* Neutral Grays - Modern Scale */
-  --gray-50: #f8fafc;
-  --gray-100: #f1f5f9;
-  --gray-200: #e2e8f0;
-  --gray-300: #cbd5e1;
-  --gray-400: #94a3b8;
-  --gray-500: #64748b;
-  --gray-600: #475569;
-  --gray-700: #334155;
-  --gray-800: #1e293b;
-  --gray-900: #0f172a;
-  
-  /* UI Component Colors */
-  --muted: var(--gray-100);
-  --muted-foreground: var(--gray-500);
-  --border: var(--gray-200);
-  --border-hover: var(--gray-300);
-  --input: var(--surface);
-  --input-border: var(--gray-300);
-  --ring: var(--primary);
-  
-  /* Status Colors - Modern Palette */
-  --success: #10b981;
-  --success-light: #d1fae5;
-  --success-dark: #059669;
-  --warning: #f59e0b;
-  --warning-light: #fef3c7;
-  --warning-dark: #d97706;
-  --error: #ef4444;
-  --error-light: #fee2e2;
-  --error-dark: #dc2626;
-  --info: #3b82f6;
-  --info-light: #dbeafe;
-  --info-dark: #2563eb;
-  
-  /* Shadows - SaaS-Grade Depth */
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  --shadow-2xl: 0 32px 64px -12px rgb(0 0 0 / 0.25);
-  --shadow-primary: 0 4px 14px 0 rgba(220, 38, 38, 0.15);
-  --shadow-primary-lg: 0 8px 24px 0 rgba(220, 38, 38, 0.2);
-  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  
-  /* Typography Scale - Modern */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  --font-size-4xl: 2.25rem;
-  
+  /* Material 3 Color Roles - Primary (Red) */
+  --md-sys-color-primary: #dc2626;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #ffdad6;
+  --md-sys-color-on-primary-container: #410002;
+
+  /* Material 3 Secondary Colors */
+  --md-sys-color-secondary: #775652;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #ffdad6;
+  --md-sys-color-on-secondary-container: #2c1512;
+
+  /* Material 3 Tertiary Colors */
+  --md-sys-color-tertiary: #3b82f6;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #dbeafe;
+  --md-sys-color-on-tertiary-container: #001d35;
+
+  /* Material 3 Surface Colors */
+  --md-sys-color-surface: #fef7ff;
+  --md-sys-color-surface-dim: #e3d6dd;
+  --md-sys-color-surface-bright: #fef7ff;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #fdf0f7;
+  --md-sys-color-surface-container: #f7eaf1;
+  --md-sys-color-surface-container-high: #f1e4eb;
+  --md-sys-color-surface-container-highest: #ecdee6;
+  --md-sys-color-on-surface: #1d1b1b;
+  --md-sys-color-on-surface-variant: #534341;
+  --md-sys-color-surface-variant: #f5ddda;
+
+  /* Material 3 Outline */
+  --md-sys-color-outline: #857370;
+  --md-sys-color-outline-variant: #d8c2be;
+
+  /* Material 3 Error Colors */
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+
+  /* Material 3 Success Colors */
+  --md-sys-color-success: #10b981;
+  --md-sys-color-on-success: #ffffff;
+  --md-sys-color-success-container: #d1fae5;
+
+  /* Material 3 Warning Colors */
+  --md-sys-color-warning: #f59e0b;
+  --md-sys-color-on-warning: #ffffff;
+  --md-sys-color-warning-container: #fef3c7;
+
+  /* Material 3 Elevation Tints (Surface + Primary overlay) */
+  --md-sys-elevation-level0: transparent;
+  --md-sys-elevation-level1: rgba(220, 38, 38, 0.05);
+  --md-sys-elevation-level2: rgba(220, 38, 38, 0.08);
+  --md-sys-elevation-level3: rgba(220, 38, 38, 0.11);
+  --md-sys-elevation-level4: rgba(220, 38, 38, 0.12);
+  --md-sys-elevation-level5: rgba(220, 38, 38, 0.14);
+
+  /* Legacy color variables for compatibility */
+  --background: var(--md-sys-color-surface);
+  --surface: var(--md-sys-color-surface-container-lowest);
+  --foreground: var(--md-sys-color-on-surface);
+  --primary: var(--md-sys-color-primary);
+  --primary-foreground: var(--md-sys-color-on-primary);
+  --border: var(--md-sys-color-outline-variant);
+  --error: var(--md-sys-color-error);
+  --success: var(--md-sys-color-success);
+  --warning: var(--md-sys-color-warning);
+
+  /* Material 3 Elevation Shadows */
+  --md-sys-elevation-shadow-level0: none;
+  --md-sys-elevation-shadow-level1: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-shadow-level2: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-shadow-level3: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-shadow-level4: 0 2px 3px 0 rgba(0, 0, 0, 0.3), 0 6px 10px 4px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-shadow-level5: 0 4px 4px 0 rgba(0, 0, 0, 0.3), 0 8px 12px 6px rgba(0, 0, 0, 0.15);
+
+  /* Legacy shadow variables */
+  --shadow-sm: var(--md-sys-elevation-shadow-level1);
+  --shadow: var(--md-sys-elevation-shadow-level2);
+  --shadow-md: var(--md-sys-elevation-shadow-level3);
+  --shadow-lg: var(--md-sys-elevation-shadow-level4);
+  --shadow-xl: var(--md-sys-elevation-shadow-level5);
+
+  /* Material 3 Typography Scale (Google Sans-inspired) */
+  --md-sys-typescale-display-large: 3.5625rem;
+  /* 57px */
+  --md-sys-typescale-display-medium: 2.8125rem;
+  /* 45px */
+  --md-sys-typescale-display-small: 2.25rem;
+  /* 36px */
+  --md-sys-typescale-headline-large: 2rem;
+  /* 32px */
+  --md-sys-typescale-headline-medium: 1.75rem;
+  /* 28px */
+  --md-sys-typescale-headline-small: 1.5rem;
+  /* 24px */
+  --md-sys-typescale-title-large: 1.375rem;
+  /* 22px */
+  --md-sys-typescale-title-medium: 1rem;
+  /* 16px */
+  --md-sys-typescale-title-small: 0.875rem;
+  /* 14px */
+  --md-sys-typescale-body-large: 1rem;
+  /* 16px */
+  --md-sys-typescale-body-medium: 0.875rem;
+  /* 14px */
+  --md-sys-typescale-body-small: 0.75rem;
+  /* 12px */
+  --md-sys-typescale-label-large: 0.875rem;
+  /* 14px */
+  --md-sys-typescale-label-medium: 0.75rem;
+  /* 12px */
+  --md-sys-typescale-label-small: 0.6875rem;
+  /* 11px */
+
   /* Spacing Scale */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -90,28 +125,43 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
-  
-  /* Border Radius - Enterprise Sharp Corners */
-  --radius-sm: 0;
-  --radius: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
-  --radius-full: 0;
-  
-  /* Severity colors */
-  --critical: #dc2626;
-  --high: #f59e0b;
+
+  /* Material 3 Border Radius - Rounded Corners */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+
+  /* Legacy radius variables */
+  --radius-sm: var(--md-sys-shape-corner-small);
+  --radius: var(--md-sys-shape-corner-medium);
+  --radius-md: var(--md-sys-shape-corner-medium);
+  --radius-lg: var(--md-sys-shape-corner-large);
+  --radius-xl: var(--md-sys-shape-corner-extra-large);
+  --radius-full: var(--md-sys-shape-corner-full);
+
+  /* Material 3 State Layer Opacities */
+  --md-sys-state-hover-opacity: 0.08;
+  --md-sys-state-focus-opacity: 0.12;
+  --md-sys-state-press-opacity: 0.12;
+  --md-sys-state-drag-opacity: 0.16;
+
+  /* Severity colors (legacy) */
+  --critical: var(--md-sys-color-error);
+  --high: var(--md-sys-color-warning);
   --medium: #fbbf24;
-  --low: #10b981;
-  --info: #3b82f6;
+  --low: var(--md-sys-color-success);
+  --info: var(--md-sys-color-tertiary);
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition-duration: 200ms;
+  transition-duration: 250ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -129,7 +179,12 @@ body {
 }
 
 /* Modern Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -137,10 +192,25 @@ h1, h2, h3, h4, h5, h6 {
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
-h1 { font-size: var(--font-size-3xl); font-weight: 700; }
-h2 { font-size: var(--font-size-2xl); font-weight: 600; }
-h3 { font-size: var(--font-size-xl); font-weight: 600; }
-h4 { font-size: var(--font-size-lg); font-weight: 600; }
+h1 {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+h4 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
@@ -186,10 +256,20 @@ html {
 
 /* Modern Glassmorphism Effect */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-md);
 }
 
 /* Modern Gradient Backgrounds */
@@ -206,7 +286,7 @@ html {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0;
+  border-radius: var(--radius);
   font-size: var(--font-size-sm);
   font-weight: 600;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -249,7 +329,7 @@ html {
 
 /* Modern Primary Button */
 .btn-primary {
-  background: var(--primary);
+  background: var(--primary-gradient);
   color: var(--primary-foreground);
   box-shadow: var(--shadow-primary);
 }
@@ -257,16 +337,16 @@ html {
 .btn-primary:hover {
   background: var(--primary-hover);
   box-shadow: var(--shadow-primary-lg);
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.02);
 }
 
 /* Enterprise Card Styles */
 .card-base {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 0;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
@@ -285,8 +365,8 @@ html {
 
 .card-base:hover {
   border-color: var(--primary);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px) scale(1.005);
 }
 
 .card-base:hover::before {
@@ -297,24 +377,24 @@ html {
 .card-elevated {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 0;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-elevated:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px) scale(1.01);
 }
 
 /* Enterprise Input Styles */
 .input-base {
   background: var(--input);
   border: 1px solid var(--input-border);
-  border-radius: 0;
+  border-radius: var(--radius);
   padding: 0.625rem 1rem;
   font-size: var(--font-size-sm);
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--foreground);
   width: 100%;
 }
@@ -325,8 +405,9 @@ html {
 
 .input-base:focus {
   border-color: var(--ring);
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12), var(--shadow-sm);
   outline: none;
+  transform: translateY(-1px);
 }
 
 .input-base::placeholder {
@@ -344,19 +425,39 @@ html {
   background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
   background-size: 200% 100%;
   animation: loading 2s infinite;
-  border-radius: 0;
+  border-radius: var(--radius);
 }
 
 @keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Enterprise Status Indicators */
-.status-success { color: var(--success); background-color: var(--success-light); }
-.status-warning { color: var(--warning); background-color: var(--warning-light); }
-.status-error { color: var(--error); background-color: var(--error-light); }
-.status-info { color: var(--info); background-color: var(--info-light); }
+.status-success {
+  color: var(--success);
+  background-color: var(--success-light);
+}
+
+.status-warning {
+  color: var(--warning);
+  background-color: var(--warning-light);
+}
+
+.status-error {
+  color: var(--error);
+  background-color: var(--error-light);
+}
+
+.status-info {
+  color: var(--info);
+  background-color: var(--info-light);
+}
 
 /* Line Clamp Utilities for Text Truncation */
 .line-clamp-1 {
@@ -379,4 +480,3 @@ html {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
-

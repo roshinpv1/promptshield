@@ -119,7 +119,7 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 0,
+    borderRadius: 12, // Material 3 medium corner
   },
   shadows: [
     'none',
@@ -138,16 +138,17 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
-          borderRadius: 0,
+          borderRadius: 20, // Material 3 pill-shaped buttons
           padding: '10px 24px',
           fontSize: '0.875rem',
-          fontWeight: 600,
-          letterSpacing: '-0.01em',
-          boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-          transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+          fontWeight: 500,
+          letterSpacing: '0.01em',
+          boxShadow: 'none',
+          transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)',
           border: 'none',
+          textTransform: 'none',
           '&:hover': {
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
             transform: 'translateY(-1px)',
           },
           '&:active': {
@@ -156,9 +157,11 @@ const theme = createTheme({
           },
         },
         contained: {
-          background: '#dc2626',
+          background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
           '&:hover': {
             background: '#b91c1c',
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15)',
           },
         },
         outlined: {
@@ -173,13 +176,13 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-          border: '1px solid #e2e8f0',
-          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+          borderRadius: 16, // Material 3 large corner for cards
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15)',
+          border: '1px solid #d8c2be',
+          transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)',
           position: 'relative',
           overflow: 'hidden',
-          background: '#ffffff',
+          background: 'linear-gradient(rgba(220, 38, 38, 0.05), rgba(220, 38, 38, 0.05)), #ffffff', // Material 3 surface tint
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -193,8 +196,9 @@ const theme = createTheme({
           },
           '&:hover': {
             borderColor: '#dc2626',
-            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-            transform: 'translateY(-1px)',
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(-2px)',
+            background: 'linear-gradient(rgba(220, 38, 38, 0.08), rgba(220, 38, 38, 0.08)), #ffffff', // Stronger tint on hover
             '&::before': {
               opacity: 1,
             },
@@ -205,13 +209,13 @@ const theme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
+          borderRadius: 8, // Material 3 small corner for chips
           fontWeight: 500,
           fontSize: '0.8125rem',
           height: '28px',
-          transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            transform: 'scale(1.02)',
+            transform: 'scale(1.05)',
           },
         },
       },
@@ -219,7 +223,7 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
+          borderRadius: 12, // Material 3 medium corner
           boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
           border: '1px solid #e2e8f0',
         },
@@ -229,8 +233,8 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: 0,
-            transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
+            borderRadius: 12, // Material 3 medium corner for inputs
+            transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: '#94a3b8',
@@ -249,7 +253,7 @@ const theme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 0,
+          borderRadius: 28, // Material 3 extra-large corner for dialogs
           boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
           border: '1px solid #e2e8f0',
         },
@@ -261,24 +265,24 @@ const theme = createTheme({
     MuiSelect: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
+          borderRadius: 12,
         },
       },
     },
     MuiAccordion: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
+          borderRadius: 12,
           '&:before': {
             display: 'none',
           },
           boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
           border: '1px solid #e2e8f0',
           '&:first-of-type': {
-            borderRadius: 0,
+            borderRadius: 12,
           },
           '&:last-of-type': {
-            borderRadius: 0,
+            borderRadius: 12,
           },
           '&.Mui-expanded': {
             margin: '16px 0',

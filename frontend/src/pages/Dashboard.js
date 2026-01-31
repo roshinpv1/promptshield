@@ -108,42 +108,32 @@ function Dashboard() {
     {
       name: 'Total Executions',
       amount: stats.totalExecutions,
-      icon: <FontAwesomeIcon icon={IconNames.faPlay} style={{ fontSize: 20, color: '#dc2626' }} />,
-      change: '+12.5%',
+      icon: <FontAwesomeIcon icon={IconNames.faLayerGroup} style={{ fontSize: 24, color: '#1e40af' }} />,
+      change: '+12%',
       changeType: 'up',
-      color: '#dc2626',
-    },
-    {
-      name: 'Running',
-      amount: stats.runningExecutions,
-      icon: <FontAwesomeIcon icon={IconNames.faClock} style={{ fontSize: 20, color: '#f59e0b' }} />,
-      change: '+5.2%',
-      changeType: 'up',
-      color: '#f59e0b',
+      bgColor: '#dbeafe', // Blue-100
+      accentColor: '#1e40af', // Blue-800
+      barColor: '#3b82f6',
     },
     {
       name: 'Completed',
       amount: stats.completedExecutions,
-      icon: <FontAwesomeIcon icon={IconNames.faCheckCircle} style={{ fontSize: 20, color: '#10b981' }} />,
-      change: '+8.1%',
+      icon: <FontAwesomeIcon icon={IconNames.faCheckCircle} style={{ fontSize: 24, color: '#3730a3' }} />,
+      change: '+8%',
       changeType: 'up',
-      color: '#10b981',
+      bgColor: '#e0e7ff', // Indigo-100
+      accentColor: '#3730a3', // Indigo-800
+      barColor: '#6366f1',
     },
     {
-      name: 'Failed',
-      amount: stats.failedExecutions,
-      icon: <FontAwesomeIcon icon={IconNames.faExclamationTriangle} style={{ fontSize: 20, color: '#ef4444' }} />,
-      change: '-2.3%',
+      name: 'Issues Found',
+      amount: stats.failedExecutions + stats.criticalResults,
+      icon: <FontAwesomeIcon icon={IconNames.faExclamationTriangle} style={{ fontSize: 24, color: '#9f1239' }} />,
+      change: '-2%',
       changeType: 'down',
-      color: '#ef4444',
-    },
-    {
-      name: 'Total Results',
-      amount: stats.totalResults,
-      icon: <FontAwesomeIcon icon={IconNames.faChartBar} style={{ fontSize: 20, color: '#3b82f6' }} />,
-      change: '+15.1%',
-      changeType: 'up',
-      color: '#3b82f6',
+      bgColor: '#ffe4e6', // Rose-100
+      accentColor: '#9f1239', // Rose-800
+      barColor: '#f43f5e',
     },
   ];
 
@@ -158,157 +148,77 @@ function Dashboard() {
   return (
     <Box sx={{ width: '100%' }}>
       {/* Summary Section - Budget Planner Style */}
-      <Card sx={{
-        mb: 3,
-        backgroundColor: '#ffffff',
-        borderRadius: 2,
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        border: '1px solid #e2e8f0',
-      }}>
-        <CardContent sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: '#1e293b', fontSize: '1rem' }}>
-            Validation Summary
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <Box>
-                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.875rem', mb: 1 }}>
-                  Total Executions
+      <Typography variant="h4" sx={{ fontWeight: 800, mb: 4, color: '#0f172a', letterSpacing: '-0.02em' }}>
+        Good morning, Engineer
+        <Typography component="span" sx={{ display: 'block', fontSize: '1rem', fontWeight: 400, color: '#64748b', mt: 1 }}>
+          Here's what's happening with your validation pipelines today.
+        </Typography>
+      </Typography>
+
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 3 }}>
+        {categories.map((category, index) => (
+          <Card
+            key={index}
+            sx={{
+              backgroundColor: category.bgColor,
+              borderRadius: '24px',
+              boxShadow: 'none',
+              border: 'none',
+              position: 'relative',
+              overflow: 'visible',
+              transition: 'transform 0.2s',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                <Typography variant="h6" sx={{ color: category.accentColor, fontWeight: 600, fontSize: '1rem' }}>
+                  {category.name}
                 </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '2rem', mb: 1 }}>
-                  {stats.totalExecutions}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" sx={{ color: '#10b981', fontSize: '0.875rem', fontWeight: 600 }}>
-                    Completed: {stats.completedExecutions}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                  <Typography variant="body2" sx={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: 600 }}>
-                    Failed: {stats.failedExecutions}
-                  </Typography>
-                </Box>
+                {category.icon}
               </Box>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Box>
-                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.875rem', mb: 1 }}>
-                  Total Results
+
+              <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 3 }}>
+                <Typography variant="h2" sx={{ fontWeight: 800, color: '#0f172a', fontSize: '3rem', lineHeight: 1 }}>
+                  {category.amount}
                 </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '2rem', mb: 1 }}>
-                  {stats.totalResults}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="body2" sx={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: 600 }}>
-                    Critical: {stats.criticalResults}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                  <Typography variant="body2" sx={{ color: '#f59e0b', fontSize: '0.875rem', fontWeight: 600 }}>
-                    High: {stats.highResults}
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Box>
-                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.875rem', mb: 1 }}>
-                  Success Rate
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '2rem', mb: 2 }}>
-                  {stats.totalExecutions > 0
-                    ? Math.round((stats.completedExecutions / stats.totalExecutions) * 100)
-                    : 0}%
-                </Typography>
-                <LinearProgress
-                  variant="determinate"
-                  value={stats.totalExecutions > 0 ? (stats.completedExecutions / stats.totalExecutions) * 100 : 0}
+                <Chip
+                  label={category.change}
+                  size="small"
                   sx={{
-                    height: 8,
-                    borderRadius: 2,
-                    backgroundColor: '#f1f5f9',
-                    '& .MuiLinearProgress-bar': {
-                      borderRadius: 2,
-                      backgroundColor: '#10b981',
-                    },
+                    backgroundColor: '#ffffff',
+                    color: category.changeType === 'up' ? '#10b981' : '#ef4444',
+                    fontWeight: 700,
+                    borderRadius: '8px',
+                    height: '24px'
                   }}
                 />
               </Box>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
 
-      {/* Categories with Biggest Results - Budget Planner Style */}
-      <Card sx={{
-        mb: 3,
-        backgroundColor: '#ffffff',
-        borderRadius: 2,
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        border: '1px solid #e2e8f0',
-      }}>
-        <CardContent sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: '#1e293b', fontSize: '1rem' }}>
-            Execution Categories
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            {categories.map((category, index) => (
-              <Box
-                key={index}
-                sx={{
-                  flex: '1 1 180px',
-                  minWidth: '180px',
-                  p: 2,
-                  border: '1px solid #e2e8f0',
-                  backgroundColor: '#ffffff',
-                  cursor: 'pointer',
-                  transition: 'all 200ms ease',
-                  '&:hover': {
-                    borderColor: category.color,
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-                onClick={() => navigate('/executions')}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                  <Box sx={{
-                    width: 32,
-                    height: 32,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: `${category.color}15`,
-                    borderRadius: 2,
-                  }}>
-                    {category.icon}
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    {category.changeType === 'up' ? (
-                      <FontAwesomeIcon icon={IconNames.faArrowTrendUp} style={{ fontSize: 16, color: '#10b981' }} />
-                    ) : (
-                      <FontAwesomeIcon icon={IconNames.faArrowTrendDown} style={{ fontSize: 16, color: '#ef4444' }} />
-                    )}
-                    <Typography variant="caption" sx={{
-                      color: category.changeType === 'up' ? '#10b981' : '#ef4444',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                    }}>
-                      {category.change}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '1.5rem', mb: 0.5 }}>
-                  {category.amount}
-                </Typography>
-                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.8125rem' }}>
-                  {category.name}
-                </Typography>
+              {/* Decorative Bar Chart Visual */}
+              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5, height: 40, opacity: 0.7 }}>
+                {[40, 60, 45, 80, 55, 90, 65, 50].map((h, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      flex: 1,
+                      backgroundColor: category.accentColor,
+                      borderRadius: '4px',
+                      height: `${h}%`,
+                      opacity: i > 4 ? 1 : 0.5
+                    }}
+                  />
+                ))}
               </Box>
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        ))}
+      </Box>
+
+
 
       <Grid container spacing={3}>
         {/* Results by Severity - Table Style */}

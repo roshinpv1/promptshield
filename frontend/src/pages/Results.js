@@ -329,42 +329,55 @@ function Results() {
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Card sx={{
-              backgroundColor: '#ffffff',
-              borderLeft: '4px solid',
-              borderLeftColor: summary.safety_score >= 80 ? '#10b981' : summary.safety_score >= 60 ? '#f59e0b' : '#dc2626',
-              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-              border: '1px solid #e2e8f0',
-              borderRadius: 2,
+              backgroundColor: summary.safety_score >= 80 ? '#ecfdf5' : summary.safety_score >= 60 ? '#fffbeb' : '#fef2f2',
+              boxShadow: 'none',
+              border: 'none',
+              borderRadius: '24px',
               height: '100%',
+              position: 'relative',
+              overflow: 'visible',
             }}>
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="body2" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Safety Score
-                </Typography>
-                <Typography variant="h2" sx={{
-                  color: summary.safety_score >= 80 ? '#10b981' : summary.safety_score >= 60 ? '#f59e0b' : '#dc2626',
-                  fontWeight: 700,
-                  mb: 1,
-                  fontSize: '3rem',
-                  lineHeight: 1,
-                  letterSpacing: '-0.02em',
-                }}>
-                  {summary.safety_score !== null && summary.safety_score !== undefined
-                    ? summary.safety_score.toFixed(1)
-                    : 'N/A'}
-                </Typography>
-                {summary.safety_grade && (
-                  <Typography variant="h6" sx={{
-                    color: summary.safety_score >= 80 ? '#10b981' : summary.safety_score >= 60 ? '#f59e0b' : '#dc2626',
-                    fontWeight: 600,
-                    mb: 1.5,
-                    fontSize: '1.25rem',
-                  }}>
-                    Grade: {summary.safety_grade}
+              <CardContent sx={{ p: 4 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem', color: summary.safety_score >= 80 ? '#047857' : summary.safety_score >= 60 ? '#b45309' : '#b91c1c' }}>
+                    Safety Score
                   </Typography>
-                )}
-                <Typography variant="caption" sx={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>
-                  Scale: 0-100 (100 = Perfect)
+                  <FontAwesomeIcon
+                    icon={IconNames.faShieldAlt}
+                    style={{
+                      fontSize: '24px',
+                      color: summary.safety_score >= 80 ? '#059669' : summary.safety_score >= 60 ? '#d97706' : '#dc2626',
+                      opacity: 0.8
+                    }}
+                  />
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 1 }}>
+                  <Typography variant="h2" sx={{
+                    color: '#0f172a',
+                    fontWeight: 800,
+                    fontSize: '3.5rem',
+                    lineHeight: 1,
+                    letterSpacing: '-0.03em',
+                  }}>
+                    {summary.safety_score !== null && summary.safety_score !== undefined
+                      ? summary.safety_score.toFixed(1)
+                      : 'N/A'}
+                  </Typography>
+                  {summary.safety_grade && (
+                    <Chip
+                      label={`Grade ${summary.safety_grade}`}
+                      sx={{
+                        backgroundColor: '#ffffff',
+                        color: summary.safety_score >= 80 ? '#059669' : summary.safety_score >= 60 ? '#d97706' : '#dc2626',
+                        fontWeight: 700,
+                        borderRadius: '8px',
+                        height: '28px'
+                      }}
+                    />
+                  )}
+                </Box>
+                <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500 }}>
+                  0-100 Scale (High is Safe)
                 </Typography>
               </CardContent>
             </Card>
@@ -372,56 +385,50 @@ function Results() {
           {driftSummary && (
             <Grid item xs={12} sm={6} md={3}>
               <Card sx={{
-                borderLeft: '4px solid',
-                borderLeftColor: driftSummary.drift_score !== null && driftSummary.drift_score !== undefined
-                  ? (driftSummary.drift_score >= 90 ? '#10b981' : driftSummary.drift_score >= 75 ? '#3b82f6' : driftSummary.drift_score >= 60 ? '#f59e0b' : '#dc2626')
-                  : '#9ca3af',
-                boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-                border: '1px solid #e2e8f0',
-                borderRadius: 2,
+                backgroundColor: '#eff6ff', // Blue-50
+                boxShadow: 'none',
+                border: 'none',
+                borderRadius: '24px',
                 height: '100%',
                 position: 'relative',
-                overflow: 'hidden',
+                overflow: 'visible',
               }}>
                 <CardContent sx={{ p: 4 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Drift Score
-                  </Typography>
-                  <Typography variant="h2" sx={{
-                    color: driftSummary.drift_score !== null && driftSummary.drift_score !== undefined
-                      ? (driftSummary.drift_score >= 90 ? '#10b981' : driftSummary.drift_score >= 75 ? '#3b82f6' : driftSummary.drift_score >= 60 ? '#f59e0b' : '#dc2626')
-                      : '#6b7280',
-                    fontWeight: 700,
-                    mb: 1,
-                    fontSize: '3rem',
-                    lineHeight: 1,
-                    letterSpacing: '-0.02em',
-                  }}>
-                    {driftSummary.drift_score !== null && driftSummary.drift_score !== undefined
-                      ? driftSummary.drift_score.toFixed(1)
-                      : 'N/A'}
-                  </Typography>
-                  {driftSummary.drift_grade ? (
-                    <Typography variant="h6" sx={{
-                      color: driftSummary.drift_score >= 90 ? '#10b981' : driftSummary.drift_score >= 75 ? '#3b82f6' : driftSummary.drift_score >= 60 ? '#f59e0b' : '#dc2626',
-                      fontWeight: 600,
-                      mb: 1.5,
-                      fontSize: '1.25rem',
-                    }}>
-                      Grade: {driftSummary.drift_grade}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem', color: '#1e40af' }}>
+                      Drift Score
                     </Typography>
-                  ) : (
-                    <Typography variant="body2" sx={{
-                      color: '#64748b',
-                      mb: 1.5,
-                      fontSize: '0.875rem',
-                      fontStyle: 'italic',
+                    <FontAwesomeIcon icon={IconNames.faExchangeAlt} style={{ fontSize: '24px', color: '#3b82f6', opacity: 0.8 }} />
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, mb: 1 }}>
+                    <Typography variant="h2" sx={{
+                      color: '#0f172a',
+                      fontWeight: 800,
+                      fontSize: '3.5rem',
+                      lineHeight: 1,
+                      letterSpacing: '-0.03em',
                     }}>
-                      No comparison yet
+                      {driftSummary.drift_score !== null && driftSummary.drift_score !== undefined
+                        ? driftSummary.drift_score.toFixed(1)
+                        : 'N/A'}
                     </Typography>
-                  )}
-                  <Typography variant="caption" sx={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>
-                    Scale: 0-100 (100 = Stable)
+                    {driftSummary.drift_grade ? (
+                      <Chip
+                        label={`Grade ${driftSummary.drift_grade}`}
+                        sx={{
+                          backgroundColor: '#ffffff',
+                          color: '#2563eb',
+                          fontWeight: 700,
+                          borderRadius: '8px',
+                          height: '28px'
+                        }}
+                      />
+                    ) : (
+                      <Typography variant="body2" sx={{ color: '#64748b', fontStyle: 'italic' }}>No baseline</Typography>
+                    )}
+                  </Box>
+                  <Typography variant="caption" sx={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500 }}>
+                    100 = No Deviation
                   </Typography>
                 </CardContent>
               </Card>
@@ -429,17 +436,20 @@ function Results() {
           )}
           <Grid item xs={12} sm={6} md={3}>
             <Card sx={{
-              backgroundColor: '#ffffff',
-              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-              border: '1px solid #e2e8f0',
-              borderRadius: 2,
+              backgroundColor: '#faf5ff', // Purple-50
+              boxShadow: 'none',
+              border: 'none',
+              borderRadius: '24px',
               height: '100%',
             }}>
               <CardContent sx={{ p: 4 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, fontSize: '0.875rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Total Results
-                </Typography>
-                <Typography variant="h2" sx={{ color: '#dc2626', fontWeight: 700, fontSize: '3rem', lineHeight: 1, letterSpacing: '-0.02em' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem', color: '#6b21a8' }}>
+                    Findings
+                  </Typography>
+                  <FontAwesomeIcon icon={IconNames.faList} style={{ fontSize: '24px', color: '#9333ea', opacity: 0.8 }} />
+                </Box>
+                <Typography variant="h2" sx={{ color: '#0f172a', fontWeight: 800, fontSize: '3.5rem', lineHeight: 1, letterSpacing: '-0.03em' }}>
                   {summary.total_results}
                 </Typography>
               </CardContent>
@@ -500,67 +510,78 @@ function Results() {
                 <Grid item xs={12} lg={6}>
                   <Card sx={{
                     backgroundColor: '#ffffff',
-                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: 2,
+                    boxShadow: 'none',
+                    border: 'none',
+                    borderRadius: '24px',
                     height: '100%',
+                    p: 2,
                   }}>
-                    <CardContent sx={{ p: 3 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                        <FontAwesomeIcon
-                          icon={IconNames.faCode}
-                          style={{ fontSize: '1.25rem', color: '#3b82f6', marginRight: '12px' }}
-                        />
-                        <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.125rem', color: '#0f172a' }}>
-                          Safety Scores by Library
+                    <CardContent sx={{ p: 0 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, pl: 1 }}>
+                        <Box sx={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: '12px',
+                          backgroundColor: '#eff6ff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          mr: 2
+                        }}>
+                          <FontAwesomeIcon icon={IconNames.faCode} style={{ fontSize: '1.25rem', color: '#3b82f6' }} />
+                        </Box>
+                        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.25rem', color: '#0f172a' }}>
+                          Library Performance
                         </Typography>
                       </Box>
                       <Grid container spacing={2}>
                         {Object.entries(summary.safety_scores_by_library).map(([library, score]) => {
                           const grade = summary.safety_grades_by_library?.[library] || 'N/A';
-                          const scoreColor = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#dc2626';
+                          const bgColor = score >= 80 ? '#ecfdf5' : score >= 60 ? '#fffbeb' : '#fef2f2';
+                          const textColor = score >= 80 ? '#047857' : score >= 60 ? '#b45309' : '#b91c1c';
+                          const accentColor = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#dc2626';
+
                           return (
                             <Grid item xs={12} sm={6} key={library}>
                               <Card sx={{
-                                borderLeft: '4px solid',
-                                borderLeftColor: scoreColor,
-                                backgroundColor: '#f8fafc',
+                                backgroundColor: bgColor,
                                 boxShadow: 'none',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: 2,
+                                border: 'none',
+                                borderRadius: '16px',
+                                transition: 'transform 0.2s',
+                                '&:hover': { transform: 'translateY(-2px)' }
                               }}>
-                                <CardContent sx={{ p: 2 }}>
-                                  <Typography variant="body2" sx={{
-                                    fontWeight: 600,
-                                    mb: 1,
-                                    fontSize: '0.75rem',
-                                    color: '#64748b',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em',
-                                  }}>
-                                    {library}
-                                  </Typography>
-                                  <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                                    <Typography variant="h4" sx={{
-                                      color: scoreColor,
+                                <CardContent sx={{ p: 2.5 }}>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                                    <Typography variant="body2" sx={{
                                       fontWeight: 700,
-                                      fontSize: '2rem',
-                                      lineHeight: 1,
+                                      fontSize: '0.875rem',
+                                      color: textColor,
+                                      textTransform: 'capitalize',
                                     }}>
-                                      {score.toFixed(1)}
+                                      {library}
                                     </Typography>
                                     <Chip
-                                      label={`Grade ${grade}`}
+                                      label={grade}
                                       size="small"
                                       sx={{
-                                        backgroundColor: scoreColor,
-                                        color: 'white',
-                                        fontWeight: 600,
+                                        backgroundColor: '#ffffff',
+                                        color: accentColor,
+                                        fontWeight: 800,
                                         fontSize: '0.75rem',
                                         height: '24px',
+                                        borderRadius: '6px'
                                       }}
                                     />
                                   </Box>
+                                  <Typography variant="h3" sx={{
+                                    color: '#0f172a',
+                                    fontWeight: 800,
+                                    fontSize: '2rem',
+                                    lineHeight: 1,
+                                  }}>
+                                    {score.toFixed(0)}
+                                  </Typography>
                                 </CardContent>
                               </Card>
                             </Grid>
@@ -577,67 +598,78 @@ function Results() {
                 <Grid item xs={12} lg={6}>
                   <Card sx={{
                     backgroundColor: '#ffffff',
-                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: 2,
+                    boxShadow: 'none',
+                    border: 'none',
+                    borderRadius: '24px',
                     height: '100%',
+                    p: 2,
                   }}>
-                    <CardContent sx={{ p: 3 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                        <FontAwesomeIcon
-                          icon={IconNames.faShieldAlt}
-                          style={{ fontSize: '1.25rem', color: '#8b5cf6', marginRight: '12px' }}
-                        />
-                        <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.125rem', color: '#0f172a' }}>
-                          Safety Scores by Category
+                    <CardContent sx={{ p: 0 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, pl: 1 }}>
+                        <Box sx={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: '12px',
+                          backgroundColor: '#f3e8ff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          mr: 2
+                        }}>
+                          <FontAwesomeIcon icon={IconNames.faShieldAlt} style={{ fontSize: '1.25rem', color: '#9333ea' }} />
+                        </Box>
+                        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.25rem', color: '#0f172a' }}>
+                          Risk Categories
                         </Typography>
                       </Box>
                       <Grid container spacing={2}>
                         {Object.entries(summary.safety_scores_by_category).map(([category, score]) => {
                           const grade = summary.safety_grades_by_category?.[category] || 'N/A';
-                          const scoreColor = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#dc2626';
+                          const bgColor = score >= 80 ? '#ecfdf5' : score >= 60 ? '#fffbeb' : '#fef2f2';
+                          const textColor = score >= 80 ? '#047857' : score >= 60 ? '#b45309' : '#b91c1c';
+                          const accentColor = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#dc2626';
+
                           return (
                             <Grid item xs={12} sm={6} key={category}>
                               <Card sx={{
-                                borderLeft: '4px solid',
-                                borderLeftColor: scoreColor,
-                                backgroundColor: '#f8fafc',
+                                backgroundColor: bgColor,
                                 boxShadow: 'none',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: 2,
+                                border: 'none',
+                                borderRadius: '16px',
+                                transition: 'transform 0.2s',
+                                '&:hover': { transform: 'translateY(-2px)' }
                               }}>
-                                <CardContent sx={{ p: 2 }}>
-                                  <Typography variant="body2" sx={{
-                                    fontWeight: 600,
-                                    mb: 1,
-                                    fontSize: '0.75rem',
-                                    color: '#64748b',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em',
-                                  }}>
-                                    {category.replace(/_/g, ' ')}
-                                  </Typography>
-                                  <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-                                    <Typography variant="h4" sx={{
-                                      color: scoreColor,
+                                <CardContent sx={{ p: 2.5 }}>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                                    <Typography variant="body2" sx={{
                                       fontWeight: 700,
-                                      fontSize: '2rem',
-                                      lineHeight: 1,
+                                      fontSize: '0.875rem',
+                                      color: textColor,
+                                      textTransform: 'capitalize',
                                     }}>
-                                      {score.toFixed(1)}
+                                      {category.replace('_', ' ')}
                                     </Typography>
                                     <Chip
-                                      label={`Grade ${grade}`}
+                                      label={grade}
                                       size="small"
                                       sx={{
-                                        backgroundColor: scoreColor,
-                                        color: 'white',
-                                        fontWeight: 600,
+                                        backgroundColor: '#ffffff',
+                                        color: accentColor,
+                                        fontWeight: 800,
                                         fontSize: '0.75rem',
                                         height: '24px',
+                                        borderRadius: '6px'
                                       }}
                                     />
                                   </Box>
+                                  <Typography variant="h3" sx={{
+                                    color: '#0f172a',
+                                    fontWeight: 800,
+                                    fontSize: '2rem',
+                                    lineHeight: 1,
+                                  }}>
+                                    {score.toFixed(0)}
+                                  </Typography>
                                 </CardContent>
                               </Card>
                             </Grid>
@@ -702,9 +734,10 @@ function Results() {
 
       <Card sx={{
         backgroundColor: '#ffffff',
-        borderRadius: 2,
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        border: '1px solid #e2e8f0',
+        borderRadius: '24px',
+        boxShadow: 'none',
+        border: 'none',
+        overflow: 'hidden',
       }}>
         <TableContainer>
           <Table>
@@ -758,11 +791,12 @@ function Results() {
                       sx={{
                         height: 24,
                         fontSize: '0.75rem',
-                        fontWeight: 500,
-                        backgroundColor: getSeverityColor(result.severity),
-                        color: 'white',
-                        borderRadius: 2,
-                        textTransform: 'capitalize',
+                        fontWeight: 700,
+                        backgroundColor: result.severity === 'critical' ? '#fef2f2' : result.severity === 'high' ? '#fff7ed' : result.severity === 'medium' ? '#fefce8' : '#f0fdf4',
+                        color: result.severity === 'critical' ? '#b91c1c' : result.severity === 'high' ? '#c2410c' : result.severity === 'medium' ? '#a16207' : '#15803d',
+                        borderRadius: '6px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
                       }}
                     />
                   </TableCell>
@@ -832,9 +866,10 @@ function Results() {
           <TableContainer
             component={Paper}
             sx={{
-              borderRadius: 2,
-              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-              border: '1px solid #e2e8f0',
+              borderRadius: '24px',
+              backgroundColor: '#ffffff',
+              boxShadow: 'none',
+              border: 'none',
               overflow: 'auto',
             }}
           >
@@ -864,8 +899,13 @@ function Results() {
                         label={drift.severity}
                         size="small"
                         sx={{
-                          backgroundColor: getSeverityColor(drift.severity),
-                          color: 'white',
+                          height: 24,
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          backgroundColor: drift.severity === 'critical' ? '#fef2f2' : drift.severity === 'high' ? '#fff7ed' : drift.severity === 'medium' ? '#fefce8' : '#f0fdf4',
+                          color: drift.severity === 'critical' ? '#b91c1c' : drift.severity === 'high' ? '#c2410c' : drift.severity === 'medium' ? '#a16207' : '#15803d',
+                          borderRadius: '6px',
+                          textTransform: 'uppercase',
                         }}
                       />
                     </TableCell>
